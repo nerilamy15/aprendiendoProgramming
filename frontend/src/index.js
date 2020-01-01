@@ -15,6 +15,7 @@ const middleware = [thunk];
 const saveLocalStorage = state => {
   try {
     const serializeState = JSON.stringify(state);
+    console.log("jaja");
     localStorage.setItem("state", serializeState);
   } catch (e) {
     console.log(e);
