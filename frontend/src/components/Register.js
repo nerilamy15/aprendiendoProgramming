@@ -27,13 +27,14 @@ const Register = props => {
   const regRedux = useSelector(state => state.auth);
   const { error, token } = regRedux;
   const dispatch = useDispatch();
-  const regDispatch = () => dispatch(regUser({ name, email, password, props }));
   const clearErrorsDispatch = () => dispatch(clearErrors());
   ///////////////////////////////////////////
   const onSubmit = e => {
     e.preventDefault();
     // attempt to reg new user
-    regDispatch();
+
+    dispatch(regUser({ name, email, password, props }));
+
     clearErrorsDispatch();
   };
   //////////////////////////////////////////////////////////////

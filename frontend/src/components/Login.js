@@ -9,7 +9,7 @@ const Login = props => {
   const authRedux = useSelector(state => state.auth);
   const dispatch = useDispatch();
   const logDispatch = () => dispatch(loadUser({ email, password, props }));
-  const { role, error, token } = authRedux;
+  const { role, error, token, verificarMail } = authRedux;
   console.log(authRedux);
   console.log(role);
   ///////////////////////////////////////////////////////////////////
@@ -44,8 +44,10 @@ const Login = props => {
   //const token = localStorage.getItem("token");
   /////////////////////////////////////////////////////////////////////////
 
-  return token ? (
-    <Redirect to="/" />
+  return verificarMail ? (
+    <div className="container" style={{ marginTop: 20 }}>
+      Verifica tu mail
+    </div>
   ) : (
     <div className="container" style={{ marginTop: 20 }}>
       <form onSubmit={onSubmit}>

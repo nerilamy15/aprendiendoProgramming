@@ -38,29 +38,31 @@ export const loadUser = ({ email, password, props }) => dispatch => {
 };
 
 export const regUser = ({ name, email, password, props }) => dispatch => {
-  const push = () => {
-    props.history.push("/login");
-  };
   axios
     .post("http://localhost:5001/register", {
       name,
       email,
       password
     })
-    .then(res =>
+    .then(res => {
       dispatch({
         type: REGISTER_SUCCESS,
         payload: {
           res,
-          push: push()
+          verificarMail: true
         }
-      })
-    )
+      });
+      props.history.push("/login");
+    })
     .catch(err => {
-      dispatch(returnErrors(err.response.data.error, err.response.status));
+      // dispatch(returnErrors(err.response.data.error, err.response.status));
+      let errorCode = err.response.data.error === 400 ? 400 : 500;
+
       dispatch({
         type: REGISTER_FAIL,
-        payload: err.response.data.error
+        payload: {
+          errorCode
+        }
       });
     });
 };

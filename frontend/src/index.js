@@ -5,6 +5,11 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { createStore, applyMiddleware, compose } from "redux";
+
+import { persistStore, persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
+import { PersistGate } from "redux-persist/integration/react";
+
 import thunk from "redux-thunk";
 import { Provider } from "react-redux";
 import allReducers from "./reducers";
@@ -32,21 +37,29 @@ const loadLocalStorage = () => {
   }
 };
 
-const persistedState = loadLocalStorage();
+const persistConfig = {
+  key: "root",
+  storage
+};
+
+const persistedReducer = persistReducer(persistConfig, allReducers);
+
 //STORE  GLOBAL STATE
 const store = createStore(
-  allReducers,
-  persistedState,
+  persistedReducer,
   composeEnhancer(applyMiddleware(...middleware))
 );
+let persistor = persistStore(store);
 
 store.subscribe(() => {
-  saveLocalStorage(store.getState());
+  //saveLocalStorage(store.getState());
 });
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <PersistGate loading={null} persistor={persistor}>
+      <App />
+    </PersistGate>
   </Provider>,
   document.getElementById("root")
 );
