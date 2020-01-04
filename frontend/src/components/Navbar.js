@@ -6,8 +6,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { loggedout } from "../actions/authActions";
 
 const Navbar = () => {
-  ///////////////////////////////////////////////////
-
   const useStyles = makeStyles(theme => ({
     root: {
       display: "flex",
@@ -20,11 +18,12 @@ const Navbar = () => {
   }));
 
   const classes = useStyles();
-
+  //////////////////////////////////////////////////////////////////////
   const authRedux = useSelector(state => state.auth);
   const { role, isAuthenticated } = authRedux;
   const dispatch = useDispatch();
   const logoutDispatch = () => dispatch(loggedout());
+  //////////////////////////////////////////////////////////////////////
   const user = (
     <Button>
       <Link to="/user">User</Link>
@@ -74,7 +73,7 @@ const Navbar = () => {
   useEffect(() => {
     roleController();
   }, [role]);
-
+  ////////////////////////////////////////////////////////////////////////////
   return (
     <>
       <div className={classes.root}>

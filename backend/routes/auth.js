@@ -7,13 +7,6 @@ const verify = require("./verifyToken");
 //register normal
 router.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
-  //check for fields
-  /*if (!name)
-    return res.status(400).send({ error: "name cannot be empty" });
-  if (!email)
-    return res.status(400).send({ error: "email cant be empty" });
-  if (!password)
-    return res.status(400).send({ error: "password cant be empty" });*/
 
   //check si el mail ya existe
   const emailExist = await User.findOne({ email });

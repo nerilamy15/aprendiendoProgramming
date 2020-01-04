@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import FatalError from "./FatalError";
 import { useForm } from "react-hook-form";
 import { TextField, Button, Typography } from "@material-ui/core";
@@ -14,7 +14,6 @@ const Login = props => {
   const dispatch = useDispatch();
   const logDispatch = () => dispatch(loadUser({ email, password, props }));
   const clearErrorsDispatch = () => dispatch(clearErrors());
-  const mailConfirmedDispatch = () => dispatch(mailConfirmed());
   const { token, verificarMail } = authRedux;
   const { errorCode } = regError;
   ///////////////////////////////////////////////////////////////////
@@ -35,19 +34,22 @@ const Login = props => {
   };
 
   /////////////////////////////////////////////////////////////
+  const emailConfirmed = () => {
+    setTimeout(() => dispatch(mailConfirmed()), 2000);
+  };
+  /////////////////////////////////////////////////////////////
   const { register, handleSubmit, errors } = useForm();
 
   ////////////////////////////////////////////////////////////
 
-  const loginSubmit = async e => {
-    //e.preventDefault();
+  const loginSubmit = () => {
     logDispatch();
   };
 
   return !verificarMail ? (
     <div className="container extra">
       <a
-        onClick={mailConfirmedDispatch}
+        onClick={emailConfirmed}
         href="https://www.google.com/"
         target="_blank"
         rel="noopener noreferrer"

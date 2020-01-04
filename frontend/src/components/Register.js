@@ -34,11 +34,8 @@ const Register = props => {
   ///////////////////////////////////////////
   const { register, handleSubmit, errors } = useForm();
   //////////////////////////////////////////
-  const registerSubmit = e => {
-    //e.preventDefault();
-    // attempt to reg new user
+  const registerSubmit = () => {
     dispatch(regUser({ name, email, password, props }));
-    console.log(formValues);
   };
   //////////////////////////////////////////////////////////////
 
