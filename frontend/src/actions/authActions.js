@@ -5,11 +5,10 @@ import {
   USER_LOADED,
   USER_LOADING,
   AUTH_ERROR,
-  LOGIN_SUCCESS,
-  LOGIN_FAIL,
   LOGOUT_SUCCESS,
   REGISTER_SUCCESS,
-  REGISTER_FAIL
+  REGISTER_FAIL,
+  MAIL_CONFIRMED
 } from "./types";
 
 export const loadUser = ({ email, password, props }) => dispatch => {
@@ -30,9 +29,15 @@ export const loadUser = ({ email, password, props }) => dispatch => {
       })
     )
     .catch(err => {
+      let errorCode = err.response ? err.response.data.code : 500;
+      let error = err.response && err.response.data.error;
+      dispatch(returnErrors(errorCode, error));
       dispatch({
         type: AUTH_ERROR,
-        payload: err.response.data.error
+        payload: {
+          errorCode,
+          error
+        }
       });
     });
 };
@@ -48,23 +53,29 @@ export const regUser = ({ name, email, password, props }) => dispatch => {
       dispatch({
         type: REGISTER_SUCCESS,
         payload: {
-          res,
-          verificarMail: true
+          res
         }
       });
       props.history.push("/login");
     })
     .catch(err => {
-      // dispatch(returnErrors(err.response.data.error, err.response.status));
-      let errorCode = err.response.data.error === 400 ? 400 : 500;
-
+      let errorCode = err.response ? err.response.data.code : 500;
+      let error = err.response && err.response.data.error;
+      dispatch(returnErrors(errorCode, error));
       dispatch({
         type: REGISTER_FAIL,
         payload: {
-          errorCode
+          errorCode,
+          error
         }
       });
     });
+};
+
+export const mailConfirmed = () => {
+  return {
+    type: MAIL_CONFIRMED
+  };
 };
 
 export const loggedout = () => {

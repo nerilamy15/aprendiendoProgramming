@@ -17,7 +17,7 @@ const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const middleware = [thunk];
 
-const saveLocalStorage = state => {
+/*const saveLocalStorage = state => {
   try {
     const serializeState = JSON.stringify(state);
     console.log("jaja");
@@ -25,9 +25,9 @@ const saveLocalStorage = state => {
   } catch (e) {
     console.log(e);
   }
-};
+};*/
 
-const loadLocalStorage = () => {
+/*const loadLocalStorage = () => {
   try {
     const serializeState = localStorage.getItem("state");
     if (serializeState === null) return undefined;
@@ -35,11 +35,12 @@ const loadLocalStorage = () => {
   } catch (e) {
     return undefined;
   }
-};
+};*/
 
 const persistConfig = {
   key: "root",
-  storage
+  storage,
+  blacklist: ["error", "userInfoReducer"]
 };
 
 const persistedReducer = persistReducer(persistConfig, allReducers);
@@ -51,9 +52,9 @@ const store = createStore(
 );
 let persistor = persistStore(store);
 
-store.subscribe(() => {
+/*store.subscribe(() => {
   //saveLocalStorage(store.getState());
-});
+});*/
 
 ReactDOM.render(
   <Provider store={store}>

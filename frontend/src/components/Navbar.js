@@ -7,11 +7,24 @@ import { loggedout } from "../actions/authActions";
 
 const Navbar = () => {
   ///////////////////////////////////////////////////
+
+  const useStyles = makeStyles(theme => ({
+    root: {
+      display: "flex",
+      justifyContent: "space-evenly"
+    },
+    menuButton: {
+      marginRight: theme.spacing(10),
+      flexGrow: 1
+    }
+  }));
+
+  const classes = useStyles();
+
   const authRedux = useSelector(state => state.auth);
   const { role, isAuthenticated } = authRedux;
   const dispatch = useDispatch();
   const logoutDispatch = () => dispatch(loggedout());
-
   const user = (
     <Button>
       <Link to="/user">User</Link>
@@ -64,28 +77,20 @@ const Navbar = () => {
 
   return (
     <>
-      <AppBar color="primary" position="static">
-        <Toolbar>
-          <Grid
-            container
-            spacing={24}
-            direction="row"
-            alignItems="center"
-            justify="space-between"
-          >
-            <Grid item xs={10}>
-              <Button>
-                <Link to="/">Home</Link>
-              </Button>
-            </Grid>
+      <div className={classes.root}>
+        <AppBar position="fixed">
+          <Toolbar color="primary">
+            <Button className={classes.menuButton}>
+              <Link to="/">Home</Link>
+            </Button>
+
             {roleController()}
-            <Grid item xs={2}>
-              {!isAuthenticated ? register : null}
-              {isAuthenticated ? logout : signin}
-            </Grid>
-          </Grid>
-        </Toolbar>
-      </AppBar>
+
+            {!isAuthenticated ? register : null}
+            {isAuthenticated ? logout : signin}
+          </Toolbar>
+        </AppBar>
+      </div>
     </>
   );
 };

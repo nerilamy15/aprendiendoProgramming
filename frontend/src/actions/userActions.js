@@ -1,10 +1,8 @@
-import { SUCCESS_SUBMIT } from "./types";
+import { SUCCESS_SUBMIT, FAIL_SUBMIT } from "./types";
 import { returnErrors } from "./errorActions";
 import axios from "axios";
 
-const token = window.localStorage.getItem("token");
-
-export const userInfo = ({ animal, color, result }) => dispatch => {
+export const userInfo = ({ animal, color, result, token }) => dispatch => {
   axios
     .post(
       "http://localhost:5001/user",
@@ -20,15 +18,18 @@ export const userInfo = ({ animal, color, result }) => dispatch => {
     .then(res =>
       dispatch({
         type: SUCCESS_SUBMIT,
-        payload: res
+        payload: res.data.successCode
       })
     )
     .catch(err => {
-      // dispatch(returnErrors(err.response.data.message, err.response.status));
-      //console.log(err.response.data.message);
-      //dispatch({
-      //type: REGISTER_FAIL
-      //});
-      dispatch(err);
+      let errorCode = err.response ? err.response.data.code : 500;
+      let error = err.response && err.response.data.error;
+      dispatch(returnErrors(errorCode));
+      dispatch({
+        type: FAIL_SUBMIT,
+        payload: {
+          errorCode
+        }
+      });
     });
 };

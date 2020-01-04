@@ -7,8 +7,7 @@ import {
   LOGOUT_SUCCESS,
   REGISTER_SUCCESS,
   REGISTER_FAIL,
-  USER_AUTH,
-  ADMIN_AUTH
+  MAIL_CONFIRMED
 } from "../actions/types";
 
 const initialState = {
@@ -17,9 +16,7 @@ const initialState = {
   isLoading: false,
   role: null,
   user: null,
-  error: null,
-  verificarMail: false,
-  errorCode: null
+  verificarMail: false
 };
 
 const authReducer = (state = initialState, action) => {
@@ -30,8 +27,6 @@ const authReducer = (state = initialState, action) => {
         isLoading: true
       };
     case USER_LOADED:
-      //window.localStorage.setItem("token", action.payload.token);
-      //window.localStorage.setItem("role", action.payload.role);
       return {
         ...state,
         isAuthenticated: true,
@@ -47,12 +42,12 @@ const authReducer = (state = initialState, action) => {
         ...action.payload,
         isAuthenticated: false,
         isLoading: false,
+        verificarMail: false,
         push: action.payload.push
       };
     case AUTH_ERROR:
     case LOGIN_FAIL:
     case REGISTER_FAIL:
-    case LOGIN_FAIL:
       return {
         ...state,
         token: null,
@@ -71,13 +66,11 @@ const authReducer = (state = initialState, action) => {
         isLoading: false,
         user: null
       };
-    case ADMIN_AUTH:
+    case MAIL_CONFIRMED:
+      window.location.reload();
       return {
-        ...action.payload
-      };
-    case USER_AUTH:
-      return {
-        ...action.payload
+        ...state,
+        verificarMail: true
       };
     default:
       return state;

@@ -1,11 +1,11 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 const Home = () => {
   const authRedux = useSelector(state => state.auth);
   const { user } = authRedux;
   return (
-    <div className="container" style={{ marginTop: 20 }}>
+    <div className="container" style={{ marginTop: 100 }}>
       {user ? (
         <h1 className="text-center">{`Welcome ${user}`}</h1>
       ) : (

@@ -22,3 +22,6 @@ export const EMPTY = "EMPTY";
 ////////////////////////////////////////////////////
 // userPage
 export const SUCCESS_SUBMIT = "SUCCESS_SUBMIT";
+export const FAIL_SUBMIT = "FAIL_SUBMIT";
+///////////////////////////////////////////////////
+export const MAIL_CONFIRMED = "MAIL_CONFIRMED";

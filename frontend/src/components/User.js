@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
+import FatalError from "./FatalError";
+import SuccessMessage from "./SuccessMessage";
+import { useForm } from "react-hook-form";
+import { TextField, Button, Typography, Box, flexbox } from "@material-ui/core";
 import { Redirect } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { userInfo } from "../actions/userActions";
+import { clearErrors } from "../actions/errorActions";
 
 const User = props => {
   //////////////////////////////////////////////////////////////////////////////
@@ -18,6 +22,7 @@ const User = props => {
   let valueB = 20;
 
   ///////////////////////////////////////////////////////////////////////////////////
+
   const handleChange = e => {
     const target = e.target;
     setFormValues(prevState => ({
@@ -27,88 +32,92 @@ const User = props => {
   };
   ////////////////////////////////////////////////////////////////////
   const authRedux = useSelector(state => state.auth);
-  const { role, token, error } = authRedux;
+  const errorRedux = useSelector(state => state.error);
+  const userRedux = useSelector(state => state.userInfoReducer);
+  const { successCode } = userRedux;
+  console.log(successCode);
+  const { token } = authRedux;
+  const { errorCode } = errorRedux;
   const dispatch = useDispatch();
-  const userInfoDispatch = () => dispatch(userInfo({ animal, color, result }));
+  const userInfoDispatch = () =>
+    dispatch(userInfo({ animal, color, result, token }));
+  const clearErrorsDispatch = () => dispatch(clearErrors());
   /////////////////////////////////////////////////////////////////////////////////////////
-  const onSubmit = async e => {
-    e.preventDefault();
+  const { register, handleSubmit, errors } = useForm();
+  ///////////////////////////////////////////////////////////////////////////////////
+  const userInformation = () => {
+    //e.preventDefault();
     userInfoDispatch();
     setFormValues(formDefaultValues);
-    /* try{
-            const data = await axios.post('http://localhost:5001/user', {
-                animal,
-                color,
-                result 
-            },
-             {
-                headers : {"auth-token" : token}
-            });
-            console.log(data);
-            setFormValues(formDefaultValues);
-        }catch(err){
-            console.log(err.response)
-            setErrors(err.response.data)
-        } */
   };
   ///////////////////////////////////////////////////////////////////////////
-  const errorMessages = (
-    <div class="alert alert-danger" role="alert">
-      {error}
-    </div>
-  );
+
   ///////////////////////////////////////////////////////////////////////////////////////////
   return !token ? (
     <Redirect to="/" />
   ) : (
     <>
-      <h1 className="text-center mb-5">User Page</h1>
-      <div className="container">
-        <form onSubmit={onSubmit}>
-          <h2 className="text-center">Random Info</h2>
-          <div className="form-group">
-            <label className="control-label">Animal</label>
-            <input
+      <div className="container extra">
+        <form onSubmit={handleSubmit(userInformation)}>
+          <Typography>Random Info</Typography>
+          <div>
+            <TextField
+              inputRef={register({
+                required: { value: true, message: "animal cannot be empty" }
+              })}
+              label="Animal"
               onChange={handleChange}
-              className="form-control"
               type="text"
-              placeholder="ANIMAL"
               name="animal"
               value={animal}
-            ></input>
+              margin="normal"
+              onFocus={clearErrorsDispatch}
+              error={errors.animal}
+              helperText={errors?.animal?.message}
+            ></TextField>
           </div>
-          <div className="form-group">
-            <label className="control-label">Color</label>
-            <input
+          <div>
+            <TextField
+              inputRef={register({
+                required: { value: true, message: "Color cannot be empty" }
+              })}
+              label="Color"
               onChange={handleChange}
-              className="form-control"
               type="text"
-              placeholder="COLOR"
               name="color"
               value={color}
-            ></input>
+              margin="normal"
+              onFocus={clearErrorsDispatch}
+              error={errors.color}
+              helperText={errors?.animal?.message}
+            ></TextField>
           </div>
-          <div className="form-group d-flex justify-content-sm-around mt-2">
-            <p>{valueA}</p>
-            <p>+</p>
-            <p>{valueB}</p>
-            <p>=</p>
-            <div class="col-xs-2">
-              <input
+          <div>
+            <div className="flex">
+              <div className="flex result">
+                <p>{valueA}</p>
+                <p>+</p>
+                <p>{valueB}</p>
+                <p>=</p>
+              </div>
+              <TextField
+                inputRef={register({
+                  required: { value: true, message: "field cannot be empty" }
+                })}
                 onChange={handleChange}
-                className="form-control text-center"
                 type="text"
                 name="result"
                 value={result}
-              ></input>
+                error={errors.result}
+                helperText={errors?.result?.message}
+              ></TextField>
             </div>
           </div>
           <div className="form-group">
-            <button className="btn btn-primary btn-lg" type="submit">
-              Submit
-            </button>
+            <Button type="submit">Submit</Button>
           </div>
-          {error ? errorMessages : null}
+          <div>{errorCode === 500 && <FatalError />}</div>
+          <div>{successCode && <SuccessMessage />}</div>
         </form>
       </div>
     </>
