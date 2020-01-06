@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
-import { AppBar, Button, Toolbar, Grid } from "@material-ui/core";
+import { AppBar, Button, Toolbar } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { loggedout } from "../actions/authActions";
+import { logoutAction } from "../actions/logoutAction";
 
 const Navbar = () => {
   const useStyles = makeStyles(theme => ({
@@ -19,10 +19,10 @@ const Navbar = () => {
 
   const classes = useStyles();
   //////////////////////////////////////////////////////////////////////
-  const authRedux = useSelector(state => state.auth);
-  const { role, isAuthenticated } = authRedux;
+  const userInfo = useSelector(state => state.authReducer);
+  const { role, isAuthenticated } = userInfo;
   const dispatch = useDispatch();
-  const logoutDispatch = () => dispatch(loggedout());
+  const logoutDispatch = () => dispatch(logoutAction());
   //////////////////////////////////////////////////////////////////////
   const user = (
     <Button>
@@ -59,21 +59,6 @@ const Navbar = () => {
     </Button>
   );
   /////////////////////////////////////////////////////////////////
-
-  const roleController = () => {
-    if (role === "basic") {
-      return user;
-    } else if (role === "admin") {
-      return admin;
-    } else {
-      return null;
-    }
-  };
-
-  useEffect(() => {
-    roleController();
-  }, [role]);
-  ////////////////////////////////////////////////////////////////////////////
   return (
     <>
       <div className={classes.root}>
@@ -82,10 +67,9 @@ const Navbar = () => {
             <Button className={classes.menuButton}>
               <Link to="/">Home</Link>
             </Button>
-
-            {roleController()}
-
-            {!isAuthenticated ? register : null}
+            {role === "basic" && user}
+            {role === "admin" && admin}
+            {!isAuthenticated && register}
             {isAuthenticated ? logout : signin}
           </Toolbar>
         </AppBar>

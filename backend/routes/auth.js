@@ -30,20 +30,17 @@ router.post("/register", async (req, res) => {
   });
   try {
     const savedUser = await user.save();
-    res.send({ message: "account created" });
+    res.status(201).send({ message: "account created", user });
   } catch (err) {
-    res.status(500).send({ code: 500, error: "unexpected error" });
+    res
+      .status(500)
+      .send({ code: 500, error: "unexpected error, try again later" });
   }
 });
 
 //login normal
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
-  //check for fields
-  /*if (!email || !password) {
-    return res.status(400).send({ code: 400, error: "fields cannot be empty" });
-  }*/
-
   // check mail no existe
   const user = await User.findOne({ email });
   if (!user)
@@ -56,7 +53,12 @@ router.post("/login", async (req, res) => {
   if (!validPass)
     return res
       .status(400)
-      .send({ code: 463, error: "email or password incorrect" });
+      .send({ code: 462, error: "email or password incorrect" });
+
+  // check if the email is authenticated
+  const validEmail = await user.isAuthenticated;
+  !validEmail &&
+    res.status(400).send({ code: 463, error: "email is not confirmed", user });
 
   // crear y asignar jwt
   try {
@@ -65,7 +67,24 @@ router.post("/login", async (req, res) => {
       .header("auth-token", token)
       .send({ token: token, user: user, message: "logged in" });
   } catch (err) {
-    res.status(500).send({ code: 500, error: "unexpected error" });
+    res
+      .status(500)
+      .send({ code: 500, error: "unexpected error, try again later" });
+  }
+});
+
+// authenticate email
+router.patch("/:userEmail", async (req, res) => {
+  try {
+    const { userEmail } = req.params;
+    const { isAuthenticated } = req.body;
+    const updatedUser = await User.updateOne(
+      { email: userEmail },
+      { $set: { isAuthenticated } }
+    );
+    res.status(200).send({ code: 200, message: "authenticated!", updatedUser });
+  } catch (err) {
+    res.status(400).send({ code: 500 });
   }
 });
 

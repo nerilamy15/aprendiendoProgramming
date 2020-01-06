@@ -2,8 +2,8 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 const Home = () => {
-  const authRedux = useSelector(state => state.auth);
-  const { user } = authRedux;
+  const userInfo = useSelector(state => state.authReducer);
+  const { user } = userInfo;
   return (
     <div className="container" style={{ marginTop: 100 }}>
       {user ? (

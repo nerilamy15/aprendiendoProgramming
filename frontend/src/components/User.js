@@ -31,13 +31,12 @@ const User = props => {
     }));
   };
   ////////////////////////////////////////////////////////////////////
-  const authRedux = useSelector(state => state.auth);
-  const errorRedux = useSelector(state => state.error);
+  const userInfo = useSelector(state => state.authReducer);
+  const backEndErrors = useSelector(state => state.errorsReducer);
   const userRedux = useSelector(state => state.userInfoReducer);
   const { successCode } = userRedux;
-  console.log(successCode);
-  const { token } = authRedux;
-  const { errorCode } = errorRedux;
+  const { token } = userInfo;
+  const { errorCode } = backEndErrors;
   const dispatch = useDispatch();
   const userInfoDispatch = () =>
     dispatch(userInfo({ animal, color, result, token }));
@@ -46,13 +45,10 @@ const User = props => {
   const { register, handleSubmit, errors } = useForm();
   ///////////////////////////////////////////////////////////////////////////////////
   const userInformation = () => {
-    //e.preventDefault();
     userInfoDispatch();
     setFormValues(formDefaultValues);
   };
   ///////////////////////////////////////////////////////////////////////////
-
-  ///////////////////////////////////////////////////////////////////////////////////////////
   return !token ? (
     <Redirect to="/" />
   ) : (

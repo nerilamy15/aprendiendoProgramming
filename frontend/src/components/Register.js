@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { TextField, Button, Typography } from "@material-ui/core";
 import { Redirect } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { regUser } from "../actions/authActions";
+import { registerAction } from "../actions/registerAction";
 import { clearErrors } from "../actions/errorActions";
 
 const Register = props => {
@@ -25,17 +25,17 @@ const Register = props => {
     }));
   };
   ///////////////////////////////////////////
-  const regRedux = useSelector(state => state.auth);
-  const regError = useSelector(state => state.error);
-  const { token } = regRedux;
-  const { errorCode } = regError;
+  const userInfo = useSelector(state => state.authReducer);
+  const backEndErrors = useSelector(state => state.errorsReducer);
+  const { token } = userInfo;
+  const { errorCode, error } = backEndErrors;
   const dispatch = useDispatch();
   const clearErrorsDispatch = () => dispatch(clearErrors());
   ///////////////////////////////////////////
   const { register, handleSubmit, errors } = useForm();
   //////////////////////////////////////////
   const registerSubmit = () => {
-    dispatch(regUser({ name, email, password, props }));
+    dispatch(registerAction({ name, email, password, props }));
   };
   //////////////////////////////////////////////////////////////
 
@@ -62,10 +62,7 @@ const Register = props => {
             margin="normal"
             onFocus={clearErrorsDispatch}
             error={errorCode === 461 || errors.name}
-            helperText={
-              (errorCode === 461 && "username is already in use") ||
-              errors?.name?.message
-            }
+            helperText={(errorCode === 461 && error) || errors?.name?.message}
           ></TextField>
         </div>
         <div>
@@ -85,10 +82,7 @@ const Register = props => {
             value={email}
             error={errorCode === 460 || errors.email}
             onFocus={clearErrorsDispatch}
-            helperText={
-              (errorCode === 460 && "email is already in use") ||
-              errors?.email?.message
-            }
+            helperText={(errorCode === 460 && error) || errors?.email?.message}
           >
             >
           </TextField>

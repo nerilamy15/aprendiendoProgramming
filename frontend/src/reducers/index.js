@@ -1,11 +1,11 @@
 import { combineReducers } from "redux";
-import error from "./error";
-import auth from "./auth";
-import userInfoReducer from "./user";
+import errorsReducer from "./errorsReducer";
+import authReducer from "./authReducer";
+import userInfoReducer from "./userInfoReducer";
 
 const allReducers = combineReducers({
-  error,
-  auth,
+  errorsReducer,
+  authReducer,
   userInfoReducer
 });
 

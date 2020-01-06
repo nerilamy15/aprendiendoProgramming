@@ -1,22 +1,21 @@
 import {
-  USER_LOADED,
   USER_LOADING,
-  AUTH_ERROR,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   LOGOUT_SUCCESS,
   REGISTER_SUCCESS,
   REGISTER_FAIL,
-  MAIL_CONFIRMED
+  MAIL_CONFIRMED,
+  MAILCONFIRMED_FAIL
 } from "../actions/types";
 
 const initialState = {
-  token: null,
-  isAuthenticated: null,
+  verificarMail: false,
+  isAuthenticated: false,
   isLoading: false,
+  token: null,
   role: null,
-  user: null,
-  verificarMail: false
+  user: null
 };
 
 const authReducer = (state = initialState, action) => {
@@ -26,48 +25,39 @@ const authReducer = (state = initialState, action) => {
         ...state,
         isLoading: true
       };
-    case USER_LOADED:
+    case LOGIN_SUCCESS:
       return {
         ...state,
-        isAuthenticated: true,
         isLoading: false,
+        isAuthenticated: true,
         user: action.payload.name,
         token: action.payload.token,
         role: action.payload.role
       };
-    case LOGIN_SUCCESS:
     case REGISTER_SUCCESS:
       return {
         ...state,
-        ...action.payload,
-        isAuthenticated: false,
-        isLoading: false,
-        verificarMail: false,
-        push: action.payload.push
+        ...action.payload
       };
-    case AUTH_ERROR:
     case LOGIN_FAIL:
     case REGISTER_FAIL:
+    case MAILCONFIRMED_FAIL:
       return {
         ...state,
-        token: null,
-        isAuthenticated: false,
-        isLoading: false,
         ...action.payload
       };
     case LOGOUT_SUCCESS:
-      localStorage.removeItem("token");
-      localStorage.removeItem("role");
+      localStorage.clear();
       return {
         ...state,
         token: null,
         role: null,
         isAuthenticated: false,
         isLoading: false,
-        user: null
+        user: null,
+        verificarMail: false
       };
     case MAIL_CONFIRMED:
-      window.location.reload();
       return {
         ...state,
         verificarMail: true

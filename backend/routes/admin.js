@@ -1,31 +1,53 @@
+//admin
 const router = require("express").Router();
-const adminInfo = require("../schemas/adminInfo");
-const jwt = require("jsonwebtoken");
+const User = require("../schemas/user");
 const verify = require("./verifyToken");
 
+//get all users
+router.get("/admin/users", verify, async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).send({ code: 200, users });
+  } catch (err) {
+    res.status(400).send({ code: 500 });
+  }
+});
 
+//get one user
+router.get("/admin/:userId", verify, async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const user = await User.findById(userId);
+    res.status(200).send({ code: 200, message: user });
+  } catch (err) {
+    res.status(400).send({ code: 500 });
+  }
+});
 
-//admin 
-router.post("/admin",  verify, async (req,res) => {
+// delete user
+router.delete("/admin/:userId", verify, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const deletedUser = await User.remove({ _id: userId });
+    res.status(200).send({ code: 200, deletedUser });
+  } catch (err) {
+    res.status(400).send({ code: 500 });
+  }
+});
 
-    //check for fields
-    if(!req.body.temperature) return res.status(400).send("fields cannot be empty");
-
-    //new temp 
-    const adminTemp = new adminInfo({
-        temperature : req.body.temperature
-    });
-    try{
-        const savedInfo = await adminTemp.save();
-        res.json("temperature received");
-    }catch(err){
-        res.status(400).send({
-            message: "failed to send info",
-            err
-        });
-    }
-
-})
-
+// edit user info
+router.patch("/admin/:userId", verify, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { role, name, email, password } = req.body;
+    const updatedUser = await User.updateOne(
+      { _id: userId },
+      { $set: { role, name, email, password } }
+    );
+    res.status(200).send({ code: 200, updatedUser });
+  } catch (err) {
+    res.status(400).send({ code: 500 });
+  }
+});
 
 module.exports = router;

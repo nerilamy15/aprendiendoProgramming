@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from "react";
 import FatalError from "./FatalError";
+import EmailConfirmation from "./EmailConfirmation";
 import { useForm } from "react-hook-form";
 import { TextField, Button, Typography } from "@material-ui/core";
 import { Redirect } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { loadUser, mailConfirmed } from "../actions/authActions";
+import { loginAction } from "../actions/loginAction";
 import { clearErrors } from "../actions/errorActions";
 
 const Login = props => {
   /////////////////////////////////////////////////////////////
-  const authRedux = useSelector(state => state.auth);
-  const regError = useSelector(state => state.error);
+  const userInfo = useSelector(state => state.authReducer);
+  const backEndErrors = useSelector(state => state.errorsReducer);
   const dispatch = useDispatch();
-  const logDispatch = () => dispatch(loadUser({ email, password, props }));
+  const logDispatch = () => dispatch(loginAction({ email, password, props }));
   const clearErrorsDispatch = () => dispatch(clearErrors());
-  const { token, verificarMail } = authRedux;
-  const { errorCode } = regError;
+  const { token } = userInfo;
+  const { errorCode, error } = backEndErrors;
+
   ///////////////////////////////////////////////////////////////////
   const formDefaultValues = {
     email: "",
@@ -32,11 +34,8 @@ const Login = props => {
       [target.name]: target.value
     }));
   };
+  //////////////////////////////////////////////////////////////
 
-  /////////////////////////////////////////////////////////////
-  const emailConfirmed = () => {
-    setTimeout(() => dispatch(mailConfirmed()), 2000);
-  };
   /////////////////////////////////////////////////////////////
   const { register, handleSubmit, errors } = useForm();
 
@@ -46,18 +45,7 @@ const Login = props => {
     logDispatch();
   };
 
-  return !verificarMail ? (
-    <div className="container extra">
-      <a
-        onClick={emailConfirmed}
-        href="https://www.google.com/"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Verifica tu mail
-      </a>
-    </div>
-  ) : token ? (
+  return token ? (
     <Redirect to="/" />
   ) : (
     <div className="container extra">
@@ -74,10 +62,7 @@ const Login = props => {
             name="email"
             onFocus={clearErrorsDispatch}
             error={errorCode === 462 || errors.email}
-            helperText={
-              (errorCode === 462 && "email or password incorrect") ||
-              errors?.email?.message
-            }
+            helperText={(errorCode === 462 && error) || errors?.email?.message}
             margin="normal"
             value={email}
           ></TextField>
@@ -90,12 +75,11 @@ const Login = props => {
             label="Password"
             onChange={handleChange}
             onFocus={clearErrorsDispatch}
-            error={errorCode === 463 || errors.password}
+            error={errorCode === 462 || errors.password}
             type="password"
             name="password"
             helperText={
-              (errorCode === 463 && "email or password incorrect") ||
-              errors?.password?.message
+              (errorCode === 462 && error) || errors?.password?.message
             }
             margin="normal"
             value={password}
@@ -107,6 +91,7 @@ const Login = props => {
         </div>
       </form>
       <div>{errorCode === 500 && <FatalError />}</div>
+      {errorCode === 463 && <EmailConfirmation />}
     </div>
   );
 };
