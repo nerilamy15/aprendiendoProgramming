@@ -1,12 +1,14 @@
 import React from "react";
-import { makeStyles, SnackbarContent } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import { SnackbarContent } from "@material-ui/core";
 import { red } from "@material-ui/core/colors";
 
 const useStyles = makeStyles(theme => ({
   message: {
-    backgroundColor: red[700],
-    opacity: 0.5,
-    marginTop: 30
+    backgroundColor: red[500],
+    justifyContent: "center",
+    width: "50%",
+    margin: "auto"
   }
 }));
 
@@ -18,8 +20,8 @@ const FatalError = () => {
     <>
       <SnackbarContent
         className={message}
-        message="Unexpected error, try again later"
-      />
+        message={"Unexpected error, try again later"}
+      ></SnackbarContent>
     </>
   );
 };

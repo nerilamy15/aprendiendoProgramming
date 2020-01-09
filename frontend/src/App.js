@@ -7,7 +7,10 @@ import Register from "./components/Register";
 import Home from "./components/Home";
 import Admin from "./components/Admin";
 import User from "./components/User";
+import UsersInformation from "./components/UsersInformation";
 import EmailConmirmation from "./components/EmailConfirmation";
+import SpecificUserInfoPage from "./components/SpecificUserInfoPage";
+import UsersPosts from "./components/UsersPosts";
 
 function App() {
   return (
@@ -25,6 +28,13 @@ function App() {
           />
           <Route path="/user" exact component={User} />
           <Route path="/admin" exact component={Admin} />
+          <Route path="/admin/users" exact component={UsersInformation} />
+          <Route
+            path="/admin/users/:slag"
+            exact
+            component={SpecificUserInfoPage}
+          />
+          <Route path="/usersPosts" exact component={UsersPosts} />
         </Switch>
       </div>
     </Router>

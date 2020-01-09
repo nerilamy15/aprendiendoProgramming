@@ -1,30 +1,25 @@
 import axios from "axios";
 import { returnMessages } from "./messagesActions";
 
-import { USER_LOADING, LOGIN_SUCCESS, LOGIN_FAIL } from "./types";
+import { GET_USERS, GET_USERSFAIL, DATA_LOADING } from "./types";
 
-export const loginAction = ({ email, password, props }) => dispatch => {
-  dispatch({ type: USER_LOADING });
+export const fetchUsers = ({ token }) => dispatch => {
+  dispatch({ type: DATA_LOADING });
   axios
-    .post("http://localhost:5001/login", {
-      email,
-      password
+    .get("http://localhost:5001/admin/users", {
+      headers: { "auth-token": token }
     })
     .then(res => {
       dispatch({
-        type: LOGIN_SUCCESS,
+        type: GET_USERS,
         payload: {
-          token: res.data.token,
-          name: res.data.user.name,
-          role: res.data.user.role,
-          id: res.data.user._id,
-          email: res.data.user.email
+          users: res.data.users
         }
       });
       let message = res.data.message;
       let messageCode = res.data.code;
       dispatch(returnMessages(messageCode, message));
-      console.log(res, message, messageCode);
+      console.log(res, message, messageCode, res.data.users);
     })
 
     .catch(err => {
@@ -32,7 +27,7 @@ export const loginAction = ({ email, password, props }) => dispatch => {
       let error = err.response && err.response.data.error;
       dispatch(returnMessages(errorCode, error));
       dispatch({
-        type: LOGIN_FAIL
+        type: GET_USERSFAIL
       });
     });
 };

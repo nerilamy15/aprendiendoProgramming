@@ -1,76 +1,86 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { AppBar, Button, Toolbar } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutAction } from "../actions/logoutAction";
+import NavbarDropdown from "./NavbarDropdown";
 
 const Navbar = () => {
   const useStyles = makeStyles(theme => ({
     root: {
+      background: "linear-gradient(to top, #209cff 0%, #68e0cf 100%)",
+      boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
+      color: "white",
+      height: "10vh",
       display: "flex",
-      justifyContent: "space-evenly"
+      justifyContent: "space-around"
     },
-    menuButton: {
-      marginRight: theme.spacing(10),
-      flexGrow: 1
+    links: {
+      color: "white",
+      "&:hover": {
+        textDecoration: "none",
+        color: "white"
+      }
+    },
+    buttons: {
+      border: "2px solid white",
+      color: "white"
+    },
+    buttonMargin: {
+      marginRight: "10px"
+    },
+    popUpMarginTop: {
+      marginTop: "40px"
     }
   }));
 
   const classes = useStyles();
+  const { root, links, buttons, buttonMargin, popUpMarginTop } = classes;
   //////////////////////////////////////////////////////////////////////
   const userInfo = useSelector(state => state.authReducer);
-  const { role, isAuthenticated } = userInfo;
+  const { role, isAuthenticated, user } = userInfo;
   const dispatch = useDispatch();
   const logoutDispatch = () => dispatch(logoutAction());
   //////////////////////////////////////////////////////////////////////
-  const user = (
-    <Button>
-      <Link to="/user">User</Link>
-    </Button>
-  );
-  const admin = (
-    <>
-      <Button>
-        <Link to="/user">User</Link>
+
+  const auth = (
+    <div>
+      <Button className={`${buttons} ${buttonMargin}`}>
+        <Link className={links} to="/register">
+          Register
+        </Link>
       </Button>
-      <Button>
-        <Link to="/admin">Admin</Link>
+      <Button className={buttons}>
+        <Link className={links} to="/login">
+          LogIn
+        </Link>
       </Button>
-    </>
+    </div>
   );
-  const register = (
-    <Button>
-      <Link to="/register" color="inherit">
-        Register
-      </Link>
-    </Button>
-  );
-  const signin = (
-    <Button>
-      <Link to="/login" color="inherit">
-        LogIn
-      </Link>
-    </Button>
-  );
-  const logout = (
-    <Button onClick={() => logoutDispatch()}>
-      <Link to="/login">LogOut</Link>
-    </Button>
-  );
+
   /////////////////////////////////////////////////////////////////
   return (
     <>
-      <div className={classes.root}>
+      <div>
         <AppBar position="fixed">
-          <Toolbar color="primary">
-            <Button className={classes.menuButton}>
-              <Link to="/">Home</Link>
+          <Toolbar className={root}>
+            <Button className={buttons}>
+              <Link className={links} to="/">
+                Home
+              </Link>
             </Button>
-            {role === "basic" && user}
-            {role === "admin" && admin}
-            {!isAuthenticated && register}
-            {isAuthenticated ? logout : signin}
+
+            {!isAuthenticated && auth}
+            {isAuthenticated && (
+              <NavbarDropdown
+                role={role}
+                user={user}
+                logout={logoutDispatch}
+                btnStyle={buttons}
+                popUpMarginTop={popUpMarginTop}
+              />
+            )}
           </Toolbar>
         </AppBar>
       </div>

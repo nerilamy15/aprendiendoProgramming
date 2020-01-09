@@ -1,15 +1,19 @@
 import React from "react";
+import { Typography } from "@material-ui/core";
 import { useSelector } from "react-redux";
 
 const Home = () => {
   const userInfo = useSelector(state => state.authReducer);
   const { user } = userInfo;
   return (
-    <div className="container" style={{ marginTop: 100 }}>
+    <div className="container formContainer">
       {user ? (
-        <h1 className="text-center">{`Welcome ${user}`}</h1>
+        <Typography
+          className="textCenter"
+          variant="h2"
+        >{`Welcome ${user}`}</Typography>
       ) : (
-        <h1 className="text-center">HOME</h1>
+        <Typography variant="h2">HOME</Typography>
       )}
     </div>
   );

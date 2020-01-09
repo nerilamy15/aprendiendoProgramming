@@ -1,27 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import FatalError from "./FatalError";
 import SuccessMessage from "./SuccessMessage";
 import { useForm } from "react-hook-form";
-import { TextField, Button, Typography, Box, flexbox } from "@material-ui/core";
+import { TextField, Button, Typography } from "@material-ui/core";
 import { Redirect } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { userInfo } from "../actions/userActions";
-import { clearErrors } from "../actions/errorActions";
-
+import { editProfile } from "../actions/editProfileAction";
+import { clearMessages } from "../actions/messagesActions";
+///////____________________________________________________________/////////////////
+///////_____________ esto todavia no funciona bien________________/////////////////
+///////____________________________________________________________________________
 const User = props => {
   //////////////////////////////////////////////////////////////////////////////
   const formDefaultValues = {
-    animal: "",
-    color: "",
-    result: ""
+    editedName: "",
+    editedEmail: ""
   };
   const [formValues, setFormValues] = useState(formDefaultValues);
-  const { animal, color, result } = formValues;
-  /////////////////////////////////////////////////////////////////////////
-  let valueA = 10;
-  let valueB = 20;
-
-  ///////////////////////////////////////////////////////////////////////////////////
+  const { editedName, editedEmail } = formValues;
+  //////////////////////////////////////////////////////////////////////////////////
 
   const handleChange = e => {
     const target = e.target;
@@ -30,92 +27,78 @@ const User = props => {
       [target.name]: target.value
     }));
   };
+  ////////////////////////////////////////////////////////////////
+  useEffect(() => {
+    setFormValues({ editedName: user, editedEmail: email });
+  }, []);
   ////////////////////////////////////////////////////////////////////
-  const userInfo = useSelector(state => state.authReducer);
-  const backEndErrors = useSelector(state => state.errorsReducer);
-  const userRedux = useSelector(state => state.userInfoReducer);
-  const { successCode } = userRedux;
-  const { token } = userInfo;
-  const { errorCode } = backEndErrors;
+  const userData = useSelector(state => state.authReducer);
+  const backEndMessages = useSelector(state => state.messagesReducer);
+  const { token, user, email, id } = userData;
+
+  const { messageCode } = backEndMessages;
   const dispatch = useDispatch();
-  const userInfoDispatch = () =>
-    dispatch(userInfo({ animal, color, result, token }));
-  const clearErrorsDispatch = () => dispatch(clearErrors());
+  const editProfileDispatch = () => {
+    dispatch(editProfile({ token, editedName, editedEmail, id }));
+    setFormValues({ editedName: "", editedEmail: "" });
+  };
+  const clearMessagesDispatch = () => dispatch(clearMessages());
   /////////////////////////////////////////////////////////////////////////////////////////
   const { register, handleSubmit, errors } = useForm();
   ///////////////////////////////////////////////////////////////////////////////////
-  const userInformation = () => {
-    userInfoDispatch();
-    setFormValues(formDefaultValues);
-  };
-  ///////////////////////////////////////////////////////////////////////////
   return !token ? (
     <Redirect to="/" />
   ) : (
     <>
-      <div className="container extra">
-        <form onSubmit={handleSubmit(userInformation)}>
-          <Typography>Random Info</Typography>
+      <div className="formContainer extraHeight">
+        <form onSubmit={handleSubmit(editProfileDispatch)}>
+          <Typography>Edit your profile </Typography>
           <div>
             <TextField
               inputRef={register({
-                required: { value: true, message: "animal cannot be empty" }
+                required: { value: true, message: "field cannot be empty" }
               })}
-              label="Animal"
+              label="name"
               onChange={handleChange}
+              onFocus={clearMessagesDispatch}
               type="text"
-              name="animal"
-              value={animal}
+              name="editedName"
+              value={editedName}
               margin="normal"
-              onFocus={clearErrorsDispatch}
-              error={errors.animal}
-              helperText={errors?.animal?.message}
+              error={errors.result}
+              helperText={errors?.userDefault?.message}
             ></TextField>
           </div>
           <div>
             <TextField
-              inputRef={register({
-                required: { value: true, message: "Color cannot be empty" }
-              })}
-              label="Color"
+              label="Email"
               onChange={handleChange}
+              onFocus={clearMessagesDispatch}
               type="text"
-              name="color"
-              value={color}
+              name="editedEmail"
+              value={editedEmail}
               margin="normal"
-              onFocus={clearErrorsDispatch}
-              error={errors.color}
-              helperText={errors?.animal?.message}
+              error={errors.result}
+              helperText={errors?.emailDefault?.message}
             ></TextField>
-          </div>
-          <div>
-            <div className="flex">
-              <div className="flex result">
-                <p>{valueA}</p>
-                <p>+</p>
-                <p>{valueB}</p>
-                <p>=</p>
-              </div>
-              <TextField
-                inputRef={register({
-                  required: { value: true, message: "field cannot be empty" }
-                })}
-                onChange={handleChange}
-                type="text"
-                name="result"
-                value={result}
-                error={errors.result}
-                helperText={errors?.result?.message}
-              ></TextField>
-            </div>
           </div>
           <div className="form-group">
-            <Button type="submit">Submit</Button>
+            <Button type="submit">Edit</Button>
+            <Button
+              onClick={() =>
+                setFormValues(
+                  { userDefault: "", emailDefault: "" },
+                  props.history.push("/")
+                )
+              }
+            >
+              Cancel
+            </Button>
           </div>
-          <div>{errorCode === 500 && <FatalError />}</div>
-          <div>{successCode && <SuccessMessage />}</div>
         </form>
       </div>
+      <div>{messageCode === 500 && <FatalError />}</div>
+      <div>{messageCode === 200 && <SuccessMessage />}</div>
     </>
   );
 };

@@ -3,21 +3,18 @@ import { SUCCESS_SUBMIT, FAIL_SUBMIT } from "../actions/types";
 const initialState = {
   animal: null,
   color: null,
-  result: null,
-  successCode: null
+  result: null
 };
 
 const userInfoReducer = (state = initialState, action) => {
   switch (action.type) {
     case SUCCESS_SUBMIT:
       return {
-        ...state,
-        successCode: action.payload
+        ...state
       };
     case FAIL_SUBMIT:
       return {
-        ...state,
-        ...action.payload
+        ...state
       };
     default:
       return state;

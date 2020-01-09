@@ -1,12 +1,14 @@
 import { combineReducers } from "redux";
-import errorsReducer from "./errorsReducer";
+import messagesReducer from "./messagesReducer";
 import authReducer from "./authReducer";
 import userInfoReducer from "./userInfoReducer";
+import fetchUsersReducer from "./fetchUsersReducer";
 
 const allReducers = combineReducers({
-  errorsReducer,
+  messagesReducer,
   authReducer,
-  userInfoReducer
+  userInfoReducer,
+  fetchUsersReducer
 });
 
 export default allReducers;

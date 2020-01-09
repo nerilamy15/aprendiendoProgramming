@@ -32,9 +32,7 @@ router.post("/register", async (req, res) => {
     const savedUser = await user.save();
     res.status(201).send({ message: "account created", user });
   } catch (err) {
-    res
-      .status(500)
-      .send({ code: 500, error: "unexpected error, try again later" });
+    res.status(500).send({ code: 500 });
   }
 });
 
@@ -65,11 +63,10 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
     res
       .header("auth-token", token)
-      .send({ token: token, user: user, message: "logged in" });
+      .status(200)
+      .send({ token: token, user: user, message: "logged in", code: 200 });
   } catch (err) {
-    res
-      .status(500)
-      .send({ code: 500, error: "unexpected error, try again later" });
+    res.status(500).send({ code: 500 });
   }
 });
 

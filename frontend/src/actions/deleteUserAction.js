@@ -1,30 +1,26 @@
 import axios from "axios";
 import { returnMessages } from "./messagesActions";
+import { fetchUsers } from "./fetchUsersAction";
 
-import { USER_LOADING, LOGIN_SUCCESS, LOGIN_FAIL } from "./types";
+import { DELETE_USER, FAILDELETE_USER, DATA_LOADING } from "./types";
 
-export const loginAction = ({ email, password, props }) => dispatch => {
-  dispatch({ type: USER_LOADING });
+export const deleteUserAction = ({ token, id }) => dispatch => {
+  dispatch({ type: DATA_LOADING });
   axios
-    .post("http://localhost:5001/login", {
-      email,
-      password
+    .delete(`http://localhost:5001/admin/user/${id}`, {
+      headers: { "auth-token": token }
     })
     .then(res => {
       dispatch({
-        type: LOGIN_SUCCESS,
+        type: DELETE_USER,
         payload: {
-          token: res.data.token,
-          name: res.data.user.name,
-          role: res.data.user.role,
-          id: res.data.user._id,
-          email: res.data.user.email
+          users: res.data.deletedUser
         }
       });
       let message = res.data.message;
       let messageCode = res.data.code;
       dispatch(returnMessages(messageCode, message));
-      console.log(res, message, messageCode);
+      console.log(res, message, messageCode, res.data.deletedUser);
     })
 
     .catch(err => {
@@ -32,7 +28,7 @@ export const loginAction = ({ email, password, props }) => dispatch => {
       let error = err.response && err.response.data.error;
       dispatch(returnMessages(errorCode, error));
       dispatch({
-        type: LOGIN_FAIL
+        type: FAILDELETE_USER
       });
     });
 };

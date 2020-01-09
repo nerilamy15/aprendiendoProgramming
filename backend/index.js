@@ -13,7 +13,8 @@ app.use(express.urlencoded({ extended: false }));
 //import routes
 const authRoute = require("./routes/auth");
 const adminRoute = require("./routes/admin");
-const userRoute = require("./routes/userInfo");
+const postRoute = require("./routes/posts");
+const userRoute = require("./routes/user");
 
 dotenv.config();
 
@@ -26,7 +27,8 @@ mongoose.connect(
 
 //route middlewares
 app.use("/", authRoute);
-app.use("/", userRoute);
+app.use("/", postRoute);
 app.use("/", adminRoute);
+app.use("/", userRoute);
 
 app.listen(PORT, () => console.log(`server is up and running on port ${PORT}`));

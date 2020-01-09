@@ -1,22 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import FatalError from "./FatalError";
 import EmailConfirmation from "./EmailConfirmation";
 import { useForm } from "react-hook-form";
-import { TextField, Button, Typography } from "@material-ui/core";
+import {
+  TextField,
+  Button,
+  Typography,
+  CircularProgress
+} from "@material-ui/core";
 import { Redirect } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { loginAction } from "../actions/loginAction";
-import { clearErrors } from "../actions/errorActions";
+import { clearMessages } from "../actions/messagesActions";
 
 const Login = props => {
   /////////////////////////////////////////////////////////////
   const userInfo = useSelector(state => state.authReducer);
-  const backEndErrors = useSelector(state => state.errorsReducer);
+  const backEndMessages = useSelector(state => state.messagesReducer);
   const dispatch = useDispatch();
   const logDispatch = () => dispatch(loginAction({ email, password, props }));
-  const clearErrorsDispatch = () => dispatch(clearErrors());
-  const { token } = userInfo;
-  const { errorCode, error } = backEndErrors;
+  const clearMessagesDispatch = () => dispatch(clearMessages());
+  const { token, isLoading } = userInfo;
+  const { messageCode, message } = backEndMessages;
 
   ///////////////////////////////////////////////////////////////////
   const formDefaultValues = {
@@ -34,65 +39,79 @@ const Login = props => {
       [target.name]: target.value
     }));
   };
-  //////////////////////////////////////////////////////////////
-
   /////////////////////////////////////////////////////////////
   const { register, handleSubmit, errors } = useForm();
-
   ////////////////////////////////////////////////////////////
 
   const loginSubmit = () => {
     logDispatch();
   };
 
+  /////////////////////////////////////////////////////////////////
   return token ? (
     <Redirect to="/" />
   ) : (
-    <div className="container extra">
-      <form onSubmit={handleSubmit(loginSubmit)}>
-        <Typography>Log In</Typography>
-        <div>
-          <TextField
-            inputRef={register({
-              required: { value: true, message: "email cannot be empty" }
-            })}
-            onChange={handleChange}
-            label="Email"
-            type="email"
-            name="email"
-            onFocus={clearErrorsDispatch}
-            error={errorCode === 462 || errors.email}
-            helperText={(errorCode === 462 && error) || errors?.email?.message}
-            margin="normal"
-            value={email}
-          ></TextField>
-        </div>
-        <div>
-          <TextField
-            inputRef={register({
-              required: { value: true, message: "password cannot be empty" }
-            })}
-            label="Password"
-            onChange={handleChange}
-            onFocus={clearErrorsDispatch}
-            error={errorCode === 462 || errors.password}
-            type="password"
-            name="password"
-            helperText={
-              (errorCode === 462 && error) || errors?.password?.message
-            }
-            margin="normal"
-            value={password}
-          ></TextField>
-        </div>
-        <div>
-          <Button type="submit">Log In</Button>
-          <Button href="/register">Register</Button>
-        </div>
-      </form>
-      <div>{errorCode === 500 && <FatalError />}</div>
-      {errorCode === 463 && <EmailConfirmation />}
-    </div>
+    <>
+      <div className="formContainer loginForm">
+        <form onSubmit={handleSubmit(loginSubmit)}>
+          <Typography variant="h6">Log In</Typography>
+          <div
+            className="g-recaptcha"
+            data-sitekey="6LewnM0UAAAAABVb0aqhDQbSah_dcD9NpbyXBxVV"
+          ></div>
+
+          <div>
+            <TextField
+              inputRef={register({
+                required: { value: true, message: "email cannot be empty" }
+              })}
+              onChange={handleChange}
+              label="Email"
+              type="email"
+              name="email"
+              onFocus={clearMessagesDispatch}
+              error={messageCode === 462 || errors.email}
+              helperText={
+                (messageCode === 462 && message) || errors?.email?.message
+              }
+              margin="normal"
+              value={email}
+            ></TextField>
+          </div>
+          <div>
+            <TextField
+              inputRef={register({
+                required: { value: true, message: "password cannot be empty" }
+              })}
+              label="Password"
+              onChange={handleChange}
+              onFocus={clearMessagesDispatch}
+              error={messageCode === 462 || errors.password}
+              type="password"
+              name="password"
+              helperText={
+                (messageCode === 462 && message) || errors?.password?.message
+              }
+              margin="normal"
+              value={password}
+            ></TextField>
+          </div>
+          <div className="paddingTop">
+            <Button type="submit">
+              Log In{" "}
+              {isLoading && (
+                <div className="spinnerMarginLeft">
+                  <CircularProgress size={15} />
+                </div>
+              )}
+            </Button>
+            <Button href="/register">Register</Button>
+          </div>
+        </form>
+        {messageCode === 463 && <EmailConfirmation />}
+      </div>
+      <div>{messageCode === 500 && <FatalError />}</div>
+    </>
   );
 };
 

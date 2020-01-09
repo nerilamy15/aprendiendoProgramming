@@ -14,35 +14,35 @@ router.get("/admin/users", verify, async (req, res) => {
 });
 
 //get one user
-router.get("/admin/:userId", verify, async (req, res) => {
+router.get("/admin/user/:userId", verify, async (req, res) => {
   const { userId } = req.params;
   try {
     const user = await User.findById(userId);
-    res.status(200).send({ code: 200, message: user });
+    res.status(200).send({ code: 235, user });
   } catch (err) {
     res.status(400).send({ code: 500 });
   }
 });
 
 // delete user
-router.delete("/admin/:userId", verify, async (req, res) => {
+router.delete("/admin/user/:userId", verify, async (req, res) => {
   try {
     const { userId } = req.params;
-    const deletedUser = await User.remove({ _id: userId });
-    res.status(200).send({ code: 200, deletedUser });
+    const deletedUser = await User.deleteOne({ _id: userId });
+    res.status(200).send({ code: 236, message: "user deleted", deletedUser });
   } catch (err) {
     res.status(400).send({ code: 500 });
   }
 });
 
 // edit user info
-router.patch("/admin/:userId", verify, async (req, res) => {
+router.patch("/admin/user/:userId", verify, async (req, res) => {
   try {
     const { userId } = req.params;
-    const { role, name, email, password } = req.body;
+    const { role, name, email } = req.body;
     const updatedUser = await User.updateOne(
       { _id: userId },
-      { $set: { role, name, email, password } }
+      { $set: { role, name, email } }
     );
     res.status(200).send({ code: 200, updatedUser });
   } catch (err) {

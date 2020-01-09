@@ -4,9 +4,10 @@ import { green } from "@material-ui/core/colors";
 
 const useStyles = makeStyles(theme => ({
   message: {
-    backgroundColor: green[700],
+    backgroundColor: green[900],
     opacity: 0.5,
-    marginTop: 30
+    marginTop: 30,
+    justifyContent: "center"
   }
 }));
 

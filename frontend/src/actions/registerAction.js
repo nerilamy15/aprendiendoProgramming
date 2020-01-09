@@ -1,7 +1,7 @@
 import axios from "axios";
-import { returnErrors } from "./errorActions";
+import { returnMessages } from "./messagesActions";
 
-import { REGISTER_SUCCESS, REGISTER_FAIL } from "./types";
+import { REGISTER_SUCCESS, REGISTER_FAIL, USER_LOADING } from "./types";
 
 export const registerAction = ({
   name,
@@ -9,6 +9,7 @@ export const registerAction = ({
   password,
   props
 }) => dispatch => {
+  dispatch({ type: USER_LOADING });
   axios
     .post("http://localhost:5001/register", {
       name,
@@ -26,13 +27,9 @@ export const registerAction = ({
     .catch(err => {
       let errorCode = err.response ? err.response.data.code : 500;
       let error = err.response && err.response.data.error;
-      dispatch(returnErrors(errorCode, error));
+      dispatch(returnMessages(errorCode, error));
       dispatch({
-        type: REGISTER_FAIL,
-        payload: {
-          errorCode,
-          error
-        }
+        type: REGISTER_FAIL
       });
     });
 };
