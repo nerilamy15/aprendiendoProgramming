@@ -13,7 +13,7 @@ router.patch("/user/:userId", verify, async (req, res) => {
       { _id: userId },
       { $set: { name, email } }
     );
-    res.status(200).send({ code: 200, updatedProfile });
+    res.status(200).send({ code: 270, updatedProfile });
   } catch (err) {
     res.status(400).send({ code: 500 });
   }

@@ -8,12 +8,41 @@ import {
   Typography,
   CircularProgress
 } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { Redirect } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { registerAction } from "../actions/registerAction";
 import { clearMessages } from "../actions/messagesActions";
 
 const Register = props => {
+  /////////////////////////////////////////////////////////////
+  const useStyles = makeStyles(() => ({
+    formContainer: {
+      margin: "15vh auto",
+      width: "300px",
+      height: " 350px",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      textAlign: "center",
+      animation: "drop 1s ease",
+      boxShadow: "0 0.5px 0 0 #ffffff inset, 0 1px 2px 0 #b3b3b3"
+    },
+    buttons: {
+      border: "solid 2px #8b70d2",
+      marginRight: "5px",
+      color: "#8b70d2",
+      "&:hover": {
+        backgroundColor: "#8b70d2 !important",
+        border: "solid 2px white",
+        color: "white",
+        backgroundColor: "#8b70d2"
+      }
+    }
+  }));
+  const classes = useStyles();
+  const { formContainer, buttons } = classes;
   ///////////////////////////////////////////////////////////////
   const FormDefaultValues = {
     name: "",
@@ -53,7 +82,7 @@ const Register = props => {
     <Redirect to="/" />
   ) : (
     <>
-      <div className="formContainer extraHeight">
+      <div className={formContainer}>
         <form onSubmit={handleSubmit(registerSubmit)}>
           <Typography variant="h6">Register</Typography>
           <div>
@@ -123,7 +152,7 @@ const Register = props => {
             ></TextField>
           </div>
           <div className="paddingTop">
-            <Button type="submit">
+            <Button className={buttons} type="submit">
               Register
               {isLoading && (
                 <div className="spinnerMarginLeft">

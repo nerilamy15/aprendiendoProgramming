@@ -35,12 +35,13 @@ const EditForm = ({
   };
   return (
     <>
-      <div className={!formOpen ? "marginLeft hidden" : "marginLeft"}>
+      <div className={!formOpen ? "hidden" : " container marginLeft"}>
         <form onSubmit={submit}>
           <div>
             <TextField
               label="Username"
               onChange={handleChange}
+              fullWidth
               type="text"
               name="name"
               value={name}
@@ -52,6 +53,7 @@ const EditForm = ({
             <TextField
               type="email"
               label="Email"
+              fullWidth
               onChange={handleChange}
               name="email"
               margin="normal"
@@ -64,6 +66,7 @@ const EditForm = ({
             <TextField
               type="text"
               label="Role"
+              fullWidth
               onChange={handleChange}
               name="role"
               margin="normal"

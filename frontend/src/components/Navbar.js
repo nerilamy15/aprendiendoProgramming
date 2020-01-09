@@ -7,8 +7,8 @@ import { logoutAction } from "../actions/logoutAction";
 import NavbarDropdown from "./NavbarDropdown";
 
 const Navbar = () => {
-  const useStyles = makeStyles(theme => ({
-    root: {
+  const useStyles = makeStyles(() => ({
+    navBar: {
       background: "linear-gradient(to top, #209cff 0%, #68e0cf 100%)",
       boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
       color: "white",
@@ -36,7 +36,7 @@ const Navbar = () => {
   }));
 
   const classes = useStyles();
-  const { root, links, buttons, buttonMargin, popUpMarginTop } = classes;
+  const { navBar, links, buttons, buttonMargin, popUpMarginTop } = classes;
   //////////////////////////////////////////////////////////////////////
   const userInfo = useSelector(state => state.authReducer);
   const { role, isAuthenticated, user } = userInfo;
@@ -64,7 +64,7 @@ const Navbar = () => {
     <>
       <div>
         <AppBar position="fixed">
-          <Toolbar className={root}>
+          <Toolbar className={navBar}>
             <Button className={buttons}>
               <Link className={links} to="/">
                 Home

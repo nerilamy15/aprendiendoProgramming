@@ -3,6 +3,7 @@ import FatalError from "./FatalError";
 import SuccessMessage from "./SuccessMessage";
 import { useForm } from "react-hook-form";
 import { TextField, Button, Typography } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { Redirect } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { editProfile } from "../actions/editProfileAction";
@@ -11,6 +12,35 @@ import { clearMessages } from "../actions/messagesActions";
 ///////_____________ esto todavia no funciona bien________________/////////////////
 ///////____________________________________________________________________________
 const User = props => {
+  /////////////////////////////////////////////////////////////
+  const useStyles = makeStyles(() => ({
+    formContainer: {
+      margin: "15vh auto",
+      width: "300px",
+      height: " 300px",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      textAlign: "center",
+      animation: "drop 1s ease",
+      boxShadow: "0 0.5px 0 0 #ffffff inset, 0 1px 2px 0 #b3b3b3"
+    },
+    buttons: {
+      border: "solid 2px #8b70d2",
+      marginRight: "5px",
+      color: "#8b70d2",
+      marginTop: "20px",
+      "&:hover": {
+        backgroundColor: "#8b70d2 !important",
+        border: "solid 2px white",
+        color: "white",
+        backgroundColor: "#8b70d2"
+      }
+    }
+  }));
+  const classes = useStyles();
+  const { formContainer, buttons } = classes;
   //////////////////////////////////////////////////////////////////////////////
   const formDefaultValues = {
     editedName: "",
@@ -50,7 +80,7 @@ const User = props => {
     <Redirect to="/" />
   ) : (
     <>
-      <div className="formContainer extraHeight">
+      <div className={formContainer}>
         <form onSubmit={handleSubmit(editProfileDispatch)}>
           <Typography>Edit your profile </Typography>
           <div>
@@ -83,8 +113,11 @@ const User = props => {
             ></TextField>
           </div>
           <div className="form-group">
-            <Button type="submit">Edit</Button>
+            <Button className={buttons} type="submit">
+              Edit
+            </Button>
             <Button
+              className={buttons}
               onClick={() =>
                 setFormValues(
                   { userDefault: "", emailDefault: "" },
@@ -98,7 +131,7 @@ const User = props => {
         </form>
       </div>
       <div>{messageCode === 500 && <FatalError />}</div>
-      <div>{messageCode === 200 && <SuccessMessage />}</div>
+      <div>{messageCode === 270 && <SuccessMessage />}</div>
     </>
   );
 };

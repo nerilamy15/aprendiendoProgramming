@@ -8,12 +8,44 @@ import {
   Typography,
   CircularProgress
 } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { Redirect } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { loginAction } from "../actions/loginAction";
 import { clearMessages } from "../actions/messagesActions";
 
 const Login = props => {
+  /////////////////////////////////////////////////////////////
+  const useStyles = makeStyles(() => ({
+    formContainer: {
+      margin: "15vh auto",
+      width: "300px",
+      height: " 275px",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      textAlign: "center",
+      animation: "drop 1s ease",
+      boxShadow: "0 0.5px 0 0 #ffffff inset, 0 1px 2px 0 #b3b3b3"
+    },
+    buttons: {
+      border: "solid 2px #8b70d2",
+      marginRight: "5px",
+      color: "#8b70d2",
+      "&:hover": {
+        backgroundColor: "#8b70d2 !important",
+        border: "solid 2px white",
+        color: "white",
+        backgroundColor: "#8b70d2"
+      },
+      title1: {
+        fontFamily: "Helvetica"
+      }
+    }
+  }));
+  const classes = useStyles();
+  const { formContainer, buttons } = classes;
   /////////////////////////////////////////////////////////////
   const userInfo = useSelector(state => state.authReducer);
   const backEndMessages = useSelector(state => state.messagesReducer);
@@ -52,7 +84,7 @@ const Login = props => {
     <Redirect to="/" />
   ) : (
     <>
-      <div className="formContainer loginForm">
+      <div className={formContainer}>
         <form onSubmit={handleSubmit(loginSubmit)}>
           <Typography variant="h6">Log In</Typography>
           <div
@@ -62,6 +94,7 @@ const Login = props => {
 
           <div>
             <TextField
+              color="secondary"
               inputRef={register({
                 required: { value: true, message: "email cannot be empty" }
               })}
@@ -80,6 +113,7 @@ const Login = props => {
           </div>
           <div>
             <TextField
+              color="secondary"
               inputRef={register({
                 required: { value: true, message: "password cannot be empty" }
               })}
@@ -97,7 +131,7 @@ const Login = props => {
             ></TextField>
           </div>
           <div className="paddingTop">
-            <Button type="submit">
+            <Button className={buttons} type="submit">
               Log In{" "}
               {isLoading && (
                 <div className="spinnerMarginLeft">
@@ -105,7 +139,9 @@ const Login = props => {
                 </div>
               )}
             </Button>
-            <Button href="/register">Register</Button>
+            <Button className={buttons} href="/register">
+              Register
+            </Button>
           </div>
         </form>
         {messageCode === 463 && <EmailConfirmation />}

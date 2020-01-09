@@ -11,9 +11,12 @@ const Home = () => {
         <Typography
           className="textCenter"
           variant="h2"
+          color="secondary"
         >{`Welcome ${user}`}</Typography>
       ) : (
-        <Typography variant="h2">HOME</Typography>
+        <Typography color="primary" variant="h2">
+          HOME
+        </Typography>
       )}
     </div>
   );
