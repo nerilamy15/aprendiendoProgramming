@@ -9,7 +9,8 @@ import {
   MAIL_CONFIRMED,
   MAILCONFIRMED_FAIL,
   VERIFYCAPTCHA_SUCCESS,
-  VERIFYCAPTCHA_FAIL
+  VERIFYCAPTCHA_FAIL,
+  EDITUSER_SUCCESS
 } from "../actions/types";
 
 const initialState = {
@@ -19,7 +20,7 @@ const initialState = {
   verifyCaptcha: false,
   token: null,
   role: null,
-  user: null,
+  name: null,
   id: null,
   email: null
 };
@@ -37,11 +38,7 @@ const authReducer = (state = initialState, action) => {
         ...state,
         isLoading: false,
         isAuthenticated: true,
-        user: action.payload.name,
-        token: action.payload.token,
-        role: action.payload.role,
-        id: action.payload.id,
-        email: action.payload.email
+        ...action.payload
       };
     case REGISTER_SUCCESS:
       return {
@@ -73,7 +70,7 @@ const authReducer = (state = initialState, action) => {
         role: null,
         isAuthenticated: false,
         isLoading: false,
-        user: null,
+        name: null,
         verificarMail: false
       };
     case MAIL_CONFIRMED:
@@ -81,6 +78,11 @@ const authReducer = (state = initialState, action) => {
         ...state,
         isLoading: false,
         verificarMail: true
+      };
+    case EDITUSER_SUCCESS:
+      return {
+        ...state,
+        ...action.payload
       };
     default:
       return state;

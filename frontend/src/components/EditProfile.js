@@ -11,7 +11,7 @@ import { clearMessages } from "../actions/messagesActions";
 ///////____________________________________________________________/////////////////
 ///////_____________ esto todavia no funciona bien________________/////////////////
 ///////____________________________________________________________________________
-const User = props => {
+const EditProfile = props => {
   /////////////////////////////////////////////////////////////
   const useStyles = makeStyles(() => ({
     formContainer: {
@@ -34,8 +34,7 @@ const User = props => {
       "&:hover": {
         backgroundColor: "#8b70d2 !important",
         border: "solid 2px white",
-        color: "white",
-        backgroundColor: "#8b70d2"
+        color: "white"
       }
     }
   }));
@@ -59,17 +58,18 @@ const User = props => {
   };
   ////////////////////////////////////////////////////////////////
   useEffect(() => {
-    setFormValues({ editedName: user, editedEmail: email });
+    setFormValues({ editedName: name, editedEmail: email });
   }, []);
   ////////////////////////////////////////////////////////////////////
   const userData = useSelector(state => state.authReducer);
   const backEndMessages = useSelector(state => state.messagesReducer);
-  const { token, user, email, id } = userData;
+  const { token, name, email, id } = userData;
 
   const { messageCode } = backEndMessages;
   const dispatch = useDispatch();
   const editProfileDispatch = () => {
     dispatch(editProfile({ token, editedName, editedEmail, id }));
+
     setFormValues({ editedName: "", editedEmail: "" });
   };
   const clearMessagesDispatch = () => dispatch(clearMessages());
@@ -136,4 +136,4 @@ const User = props => {
   );
 };
 
-export default User;
+export default EditProfile;

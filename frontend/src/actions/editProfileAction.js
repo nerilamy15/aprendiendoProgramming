@@ -1,7 +1,7 @@
 import axios from "axios";
 import { returnMessages } from "./messagesActions";
 
-import { EDIT_PROFILE, EDITPROFILE_FAIL, DATA_LOADING } from "./types";
+import { EDITPROFILE_FAIL, DATA_LOADING, EDITUSER_SUCCESS } from "./types";
 
 export const editProfile = ({
   token,
@@ -23,17 +23,17 @@ export const editProfile = ({
     )
     .then(res => {
       dispatch({
-        type: EDIT_PROFILE,
+        type: EDITUSER_SUCCESS,
         payload: {
-          users: res.data.updatedProfile
+          name: res.data.user.name,
+          email: res.data.user.email
         }
       });
       let message = res.data.message;
       let messageCode = res.data.code;
       dispatch(returnMessages(messageCode, message));
-      console.log(res, message, messageCode, res.data.updatedUser);
+      console.log(message, messageCode, res.data.user);
     })
-
     .catch(err => {
       let errorCode = err.response ? err.response.data.code : 500;
       let error = err.response && err.response.data.error;

@@ -1,6 +1,5 @@
 import axios from "axios";
 import { returnMessages } from "./messagesActions";
-import { fetchUsers } from "./fetchUsersAction";
 
 import { DELETE_USER, FAILDELETE_USER, DATA_LOADING } from "./types";
 

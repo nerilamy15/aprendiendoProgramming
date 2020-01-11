@@ -6,7 +6,8 @@ import {
   TextField,
   Button,
   Typography,
-  CircularProgress
+  CircularProgress,
+  Paper
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Redirect } from "react-router-dom";
@@ -26,8 +27,7 @@ const Register = props => {
       justifyContent: "center",
       alignItems: "center",
       textAlign: "center",
-      animation: "drop 1s ease",
-      boxShadow: "0 0.5px 0 0 #ffffff inset, 0 1px 2px 0 #b3b3b3"
+      animation: "drop 1s ease"
     },
     buttons: {
       border: "solid 2px #8b70d2",
@@ -36,8 +36,7 @@ const Register = props => {
       "&:hover": {
         backgroundColor: "#8b70d2 !important",
         border: "solid 2px white",
-        color: "white",
-        backgroundColor: "#8b70d2"
+        color: "white"
       }
     }
   }));
@@ -68,7 +67,7 @@ const Register = props => {
   const dispatch = useDispatch();
   const clearMessagesDispatch = () => dispatch(clearMessages());
   ///////////////////////////////////////////
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit, errors, clearError } = useForm();
   /////////////////////////////////////////////////////////
 
   const registerSubmit = () => {
@@ -76,13 +75,18 @@ const Register = props => {
       ? alert("you forgot the captcha")
       : dispatch(registerAction({ name, email, password, props }));
   };
+
+  const clearAllErrors = () => {
+    clearError();
+    clearMessagesDispatch();
+  };
   //////////////////////////////////////////////////////////////
 
   return token ? (
     <Redirect to="/" />
   ) : (
     <>
-      <div className={formContainer}>
+      <Paper className={formContainer}>
         <form onSubmit={handleSubmit(registerSubmit)}>
           <Typography variant="h6">Register</Typography>
           <div>
@@ -100,7 +104,7 @@ const Register = props => {
               name="name"
               value={name}
               margin="normal"
-              onFocus={clearMessagesDispatch}
+              onFocus={() => clearAllErrors()}
               error={messageCode === 461 || errors.name}
               helperText={
                 (messageCode === 461 && message) || errors?.name?.message
@@ -123,7 +127,7 @@ const Register = props => {
               margin="normal"
               value={email}
               error={messageCode === 460 || errors.email}
-              onFocus={clearMessagesDispatch}
+              onFocus={() => clearAllErrors()}
               helperText={
                 (messageCode === 460 && message) || errors?.email?.message
               }
@@ -134,7 +138,10 @@ const Register = props => {
           <div>
             <TextField
               inputRef={register({
-                required: { value: true, message: "password cannot be empty" },
+                required: {
+                  value: true,
+                  message: "password cannot be empty"
+                },
                 minLength: {
                   value: 6,
                   message: "password must be at least 6 characteres long"
@@ -146,7 +153,7 @@ const Register = props => {
               name="password"
               margin="normal"
               error={errors.password}
-              onFocus={clearMessagesDispatch}
+              onFocus={() => clearAllErrors()}
               value={password}
               helperText={errors?.password?.message}
             ></TextField>
@@ -163,7 +170,7 @@ const Register = props => {
           </div>
         </form>
         <Captcha />
-      </div>
+      </Paper>
       <div>{messageCode === 500 && <FatalError />}</div>
     </>
   );

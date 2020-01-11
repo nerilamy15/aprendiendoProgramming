@@ -13,7 +13,8 @@ router.patch("/user/:userId", verify, async (req, res) => {
       { _id: userId },
       { $set: { name, email } }
     );
-    res.status(200).send({ code: 270, updatedProfile });
+    const user = await User.findById(userId);
+    res.status(200).send({ code: 270, user });
   } catch (err) {
     res.status(400).send({ code: 500 });
   }

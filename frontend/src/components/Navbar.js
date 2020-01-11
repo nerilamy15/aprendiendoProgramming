@@ -39,7 +39,7 @@ const Navbar = () => {
   const { navBar, links, buttons, buttonMargin, popUpMarginTop } = classes;
   //////////////////////////////////////////////////////////////////////
   const userInfo = useSelector(state => state.authReducer);
-  const { role, isAuthenticated, user } = userInfo;
+  const { role, isAuthenticated, name } = userInfo;
   const dispatch = useDispatch();
   const logoutDispatch = () => dispatch(logoutAction());
   //////////////////////////////////////////////////////////////////////
@@ -75,7 +75,7 @@ const Navbar = () => {
             {isAuthenticated && (
               <NavbarDropdown
                 role={role}
-                user={user}
+                name={name}
                 logout={logoutDispatch}
                 btnStyle={buttons}
                 popUpMarginTop={popUpMarginTop}

@@ -4,7 +4,7 @@ import SuccessMessage from "./SuccessMessage";
 import { makeStyles } from "@material-ui/core/styles";
 import UsersTable from "./UsersTable";
 import { Redirect } from "react-router-dom";
-import { Typography, Button, CircularProgress } from "@material-ui/core";
+import { Button, CircularProgress } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchUsers } from "../actions/fetchUsersAction";
 import { clearMessages } from "../actions/messagesActions";
@@ -33,14 +33,14 @@ const UsersInformation = () => {
       "&:hover": {
         backgroundColor: "#8b70d2 !important",
         border: "solid 2px white",
-        color: "white",
-        backgroundColor: "#8b70d2"
+        color: "white"
       }
     }
   }));
   const classes = useStyles();
   const { formContainer, buttons } = classes;
-  /////////////////////////////////////////////////////////////////////////
+
+  ////////////////////////////////////////////////////////////////////////
   const userData = useSelector(state => state.authReducer);
   const backEndMessages = useSelector(state => state.messagesReducer);
   const userInfo = useSelector(state => state.fetchUsersReducer);
@@ -65,11 +65,11 @@ const UsersInformation = () => {
           Fetch Users
         </Button>
       </div>
+
       <div className="marginBottom">
         {messageCode === 500 && <FatalError />}
         {messageCode === 236 && <SuccessMessage />}
       </div>
-
       {isLoading || !users ? (
         <div className="marginLeft">
           <CircularProgress size={100} />

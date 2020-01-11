@@ -6,7 +6,8 @@ import {
   TextField,
   Button,
   Typography,
-  CircularProgress
+  CircularProgress,
+  Paper
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Redirect } from "react-router-dom";
@@ -26,8 +27,7 @@ const Login = props => {
       justifyContent: "center",
       alignItems: "center",
       textAlign: "center",
-      animation: "drop 1s ease",
-      boxShadow: "0 0.5px 0 0 #ffffff inset, 0 1px 2px 0 #b3b3b3"
+      animation: "drop 1s ease"
     },
     buttons: {
       border: "solid 2px #8b70d2",
@@ -36,8 +36,7 @@ const Login = props => {
       "&:hover": {
         backgroundColor: "#8b70d2 !important",
         border: "solid 2px white",
-        color: "white",
-        backgroundColor: "#8b70d2"
+        color: "white"
       },
       title1: {
         fontFamily: "Helvetica"
@@ -72,11 +71,16 @@ const Login = props => {
     }));
   };
   /////////////////////////////////////////////////////////////
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit, errors, clearError } = useForm();
   ////////////////////////////////////////////////////////////
 
   const loginSubmit = () => {
     logDispatch();
+  };
+
+  const clearAllErrors = () => {
+    clearError();
+    clearMessagesDispatch();
   };
 
   /////////////////////////////////////////////////////////////////
@@ -84,7 +88,7 @@ const Login = props => {
     <Redirect to="/" />
   ) : (
     <>
-      <div className={formContainer}>
+      <Paper className={formContainer}>
         <form onSubmit={handleSubmit(loginSubmit)}>
           <Typography variant="h6">Log In</Typography>
           <div
@@ -102,7 +106,7 @@ const Login = props => {
               label="Email"
               type="email"
               name="email"
-              onFocus={clearMessagesDispatch}
+              onFocus={() => clearAllErrors()}
               error={messageCode === 462 || errors.email}
               helperText={
                 (messageCode === 462 && message) || errors?.email?.message
@@ -119,7 +123,7 @@ const Login = props => {
               })}
               label="Password"
               onChange={handleChange}
-              onFocus={clearMessagesDispatch}
+              onFocus={() => clearAllErrors()}
               error={messageCode === 462 || errors.password}
               type="password"
               name="password"
@@ -144,8 +148,8 @@ const Login = props => {
             </Button>
           </div>
         </form>
-        {messageCode === 463 && <EmailConfirmation />}
-      </div>
+      </Paper>
+      {messageCode === 463 && <EmailConfirmation />}
       <div>{messageCode === 500 && <FatalError />}</div>
     </>
   );

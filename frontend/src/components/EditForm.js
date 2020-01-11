@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import FatalError from "./FatalError";
 //import { useForm } from "react-hook-form";
 import { TextField, Button, CircularProgress } from "@material-ui/core";
@@ -21,15 +21,15 @@ const EditForm = ({
   const userInfo = useSelector(state => state.authReducer);
   const backEndMessages = useSelector(state => state.messagesReducer);
   const { token, isLoading } = userInfo;
-  const { messageCode, message } = backEndMessages;
+  const { messageCode } = backEndMessages;
   const dispatch = useDispatch();
   const clearMessagesDispatch = () => dispatch(clearMessages());
   const editUserDispatch = () =>
     dispatch(editUser({ name, email, role, token, id }));
   ///////////////////////////////////////////
-  const submit = () => {
+  const submit = async () => {
     editUserDispatch();
-    reloadAfterEdit();
+    await reloadAfterEdit();
     setFormOpen(!formOpen);
     ////////////////////////////////////////////
   };

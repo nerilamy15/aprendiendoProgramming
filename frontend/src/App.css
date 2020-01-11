@@ -5,6 +5,10 @@
 }
 body {
   position: relative;
+  background-color: rgb(240, 240, 240);
+}
+a {
+  text-decoration: none;
 }
 
 .hidden {
@@ -68,7 +72,20 @@ body {
 .redBubble {
   font-size: 14px;
 }
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed !important;
+}
 
+.active {
+  color: #65cbb7 !important;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  background: "linear-gradient(to top, #209cff 0%, #68e0cf 100%)";
+  padding-bottom: 50px;
+}
 @keyframes drop {
   0% {
     opacity: 0;

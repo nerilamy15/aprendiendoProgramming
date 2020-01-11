@@ -6,11 +6,11 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import Home from "./components/Home";
 import Admin from "./components/Admin";
-import User from "./components/User";
+import EditProfile from "./components/EditProfile";
 import UsersInformation from "./components/UsersInformation";
 import EmailConmirmation from "./components/EmailConfirmation";
 import SpecificUserInfoPage from "./components/SpecificUserInfoPage";
-import UsersPosts from "./components/UsersPosts";
+import ErrorPage from "./components/ErrorPage";
 
 function App() {
   return (
@@ -26,15 +26,11 @@ function App() {
             exact
             component={EmailConmirmation}
           />
-          <Route path="/user" exact component={User} />
+          <Route path="/editProfile" exact component={EditProfile} />
           <Route path="/admin" exact component={Admin} />
           <Route path="/admin/users" exact component={UsersInformation} />
-          <Route
-            path="/admin/users/:slag"
-            exact
-            component={SpecificUserInfoPage}
-          />
-          <Route path="/usersPosts" exact component={UsersPosts} />
+          <Route path="/users/:slag" exact component={SpecificUserInfoPage} />
+          <Route component={ErrorPage} />
         </Switch>
       </div>
     </Router>

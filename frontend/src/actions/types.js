@@ -33,4 +33,12 @@ export const DATA_LOADING = "DATA_LOADING";
 export const DELETE_USER = "DELETE_USER";
 export const FAILDELETE_USER = "FAILDELETE_USER";
 export const EDIT_USER = "EDIT_USER";
+export const EDITUSER_SUCCESS = "EDITUSER_SUCCESS";
 export const EDITUSER_FAIL = "EDITUSER_FAIL";
+//////////////////////////////////////////////
+// posts
+export const POSTS_LOADING = "POSTS_LOADING";
+export const FETCH_POSTS_SUCCESS = "FETCH_POSTS_SUCCESS";
+export const FETCH_POSTS_FAIL = "FETCH_POSTS_FAIL";
+export const FETCH_POST_SUCCESS = "FETCH_POST_SUCCESS";
+export const FETCH_POST_FAIL = "FETCH_POST_FAIL";

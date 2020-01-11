@@ -7,13 +7,13 @@ import {
   WAITING_MAILCONFIRMATION
 } from "./types";
 
-export const emailConfirmedAction = ({ props, userEmail }) => dispatch => {
+export const emailConfirmedAction = ({ props, email }) => dispatch => {
   dispatch({ type: WAITING_MAILCONFIRMATION });
   axios
-    .patch(`http://localhost:5001/${userEmail}`, {
+    .patch(`http://localhost:5001/${email}`, {
       isAuthenticated: true
     })
-    .then(res => {
+    .then(() => {
       dispatch({
         type: MAIL_CONFIRMED
       });

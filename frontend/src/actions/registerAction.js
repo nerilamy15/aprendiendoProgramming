@@ -19,7 +19,7 @@ export const registerAction = ({
     .then(res => {
       dispatch({
         type: REGISTER_SUCCESS,
-        payload: { userEmail: res.data.user.email }
+        payload: { email: res.data.user.email }
       });
       console.log(res);
       props.history.push("/emailConfirmation");

@@ -23,14 +23,14 @@ router.get("/posts/:postId", verify, async (req, res) => {
   const { postId } = req.params;
   try {
     const post = await Post.findById(postId);
-    res.status(200).send({ code: 235, post });
+    res.status(200).send({ code: 235, post: posts });
   } catch (err) {
     res.status(400).send({ code: 500 });
   }
 });
 
 // GET ALL POSTS
-router.get("/posts", verify, async (req, res) => {
+router.get("/posts", async (req, res) => {
   try {
     const posts = await Post.find();
     res.status(200).send({ code: 200, posts });

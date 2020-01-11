@@ -64,24 +64,31 @@ router.post("/login", async (req, res) => {
     res
       .header("auth-token", token)
       .status(200)
-      .send({ token: token, user: user, message: "logged in", code: 200 });
+      .send({
+        // token: token,
+        token,
+        //user: user,
+        message: "logged in",
+        code: 200,
+        user
+      });
   } catch (err) {
     res.status(500).send({ code: 500 });
   }
 });
 
 // authenticate email
-router.patch("/:userEmail", async (req, res) => {
+router.patch("/:email", async (req, res) => {
   try {
-    const { userEmail } = req.params;
+    const { email } = req.params;
     const { isAuthenticated } = req.body;
     const updatedUser = await User.updateOne(
-      { email: userEmail },
+      { email },
       { $set: { isAuthenticated } }
     );
     res.status(200).send({ code: 200, message: "authenticated!", updatedUser });
   } catch (err) {
-    res.status(400).send({ code: 500 });
+    res.status(400).send(500);
   }
 });
 
