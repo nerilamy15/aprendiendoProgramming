@@ -16,6 +16,7 @@ import {
 } from "@material-ui/core/";
 import { useDispatch } from "react-redux";
 import { deleteUserAction } from "../actions/deleteUserAction";
+import { fetchUsers } from "../actions/fetchUsersAction";
 
 ////////////////////////////////////////////////////////////////////////
 const UsersTable = ({ users, token, messageCode, reloadTable }) => {
@@ -41,12 +42,13 @@ const UsersTable = ({ users, token, messageCode, reloadTable }) => {
   const { name, email, role, id } = formValues;
   ////////////////////////////////////////////////////////////////////////
   const dispatch = useDispatch();
-  const deleteUserDispatch = id => dispatch(deleteUserAction({ token, id }));
+  // const deleteUserDispatch = id => dispatch(deleteUserAction({ token, id }));
 
-  const removeUser = async id => {
-    deleteUserDispatch(id);
-    await reloadTable();
-    setAnchorEl(!anchorEl);
+  const removeUser = id => {
+    dispatch(deleteUserAction({ token, id }));
+    dispatch(fetchUsers({ token, id }));
+    //reloadTable();
+    //setAnchorEl(!anchorEl);
   };
   //////////////////////////////////////////////////////////////////////////////////////////////
   const editUser = (id, name, email, role) => {
@@ -101,6 +103,7 @@ const UsersTable = ({ users, token, messageCode, reloadTable }) => {
                   <TableRow key={user._id}>
                     <TableCell>
                       <Button
+                        className={user.role === "admin" && "protectAdmin"}
                         onClick={() =>
                           editUser(user._id, user.name, user.email, user.role)
                         }
@@ -110,6 +113,7 @@ const UsersTable = ({ users, token, messageCode, reloadTable }) => {
                     </TableCell>
                     <TableCell>
                       <Button
+                        className={user.role === "admin" && "protectAdmin"}
                         type="button"
                         onClick={() => removeUser(user._id)}
                       >

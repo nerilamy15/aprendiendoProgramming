@@ -1,11 +1,16 @@
 import axios from "axios";
 import { returnMessages } from "./messagesActions";
 
-import { EDITPROFILE_FAIL, DATA_LOADING, EDITUSER_SUCCESS } from "./types";
+import {
+  EDITPROFILE_FAIL,
+  DATA_LOADING,
+  EDITUSER_SUCCESS,
+  EDIT_USER
+} from "./types";
 
-export const editProfile = ({
+/*export const editProfile = ({
   token,
-  editedName,
+  editedUserName,
   editedEmail,
   id
 }) => dispatch => {
@@ -14,7 +19,7 @@ export const editProfile = ({
     .patch(
       `http://localhost:5001/user/${id}`,
       {
-        editedName,
+        editedUserName,
         editedEmail
       },
       {
@@ -25,7 +30,7 @@ export const editProfile = ({
       dispatch({
         type: EDITUSER_SUCCESS,
         payload: {
-          name: res.data.user.name,
+          userName: res.data.user.userName,
           email: res.data.user.email
         }
       });
@@ -42,4 +47,45 @@ export const editProfile = ({
         type: EDITPROFILE_FAIL
       });
     });
+};*/
+
+export const editProfile = ({
+  token,
+  editedUserName,
+  editedEmail,
+  id
+}) => async dispatch => {
+  dispatch({ type: DATA_LOADING });
+  try {
+    let response = await axios.patch(
+      `http://localhost:5001/user/${id}`,
+      {
+        editedUserName,
+        editedEmail
+      },
+      {
+        headers: { "auth-token": token }
+      }
+    );
+    let userName = response.data.user.userName;
+    let email = response.data.user.email;
+    dispatch({
+      type: EDITUSER_SUCCESS,
+      payload: {
+        userName,
+        email
+      }
+    });
+    let message = response.data.message;
+    let messageCode = response.data.code;
+    dispatch(returnMessages(messageCode, message));
+    console.log(response);
+  } catch (err) {
+    let errorCode = err.response ? err.response.data.code : 500;
+    let error = err.response && err.response.data.error;
+    dispatch(returnMessages(errorCode, error));
+    dispatch({
+      type: EDITPROFILE_FAIL
+    });
+  }
 };

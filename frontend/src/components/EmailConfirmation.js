@@ -31,12 +31,12 @@ const EmailConfirmation = props => {
   const backEndMessages = useSelector(state => state.messagesReducer);
   const { messageCode } = backEndMessages;
   const dispatch = useDispatch();
-  const { verificarMail, email, isLoading } = userInfo;
-
+  const { verificarMail, isLoading, email } = userInfo;
+  console.log(email);
   const emailConfirmed = () => {
     setTimeout(() => dispatch(emailConfirmedAction({ props, email })), 2000);
   };
-  return !email || !verificarMail ? (
+  return !verificarMail ? (
     <>
       <Paper className={formContainer}>
         <a

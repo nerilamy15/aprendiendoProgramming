@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import FatalError from "./FatalError";
 import EmailConfirmation from "./EmailConfirmation";
-import { useForm } from "react-hook-form";
+import { useForm, ErrorMessage } from "react-hook-form";
 import {
   TextField,
   Button,
@@ -48,12 +49,14 @@ const Login = props => {
   /////////////////////////////////////////////////////////////
   const userInfo = useSelector(state => state.authReducer);
   const backEndMessages = useSelector(state => state.messagesReducer);
+  //////////////////////////////////////////////////////////////////
   const dispatch = useDispatch();
   const logDispatch = () => dispatch(loginAction({ email, password, props }));
   const clearMessagesDispatch = () => dispatch(clearMessages());
   const { token, isLoading } = userInfo;
-  const { messageCode, message } = backEndMessages;
-
+  const { messageCode, message, isOpen } = backEndMessages;
+  ////////////////////////////////////////////////////////////////////////
+  const history = useHistory();
   ///////////////////////////////////////////////////////////////////
   const formDefaultValues = {
     email: "",
@@ -61,6 +64,7 @@ const Login = props => {
   };
   const [formValues, setFormValues] = useState(formDefaultValues);
   const { email, password } = formValues;
+
   //////////////////////////////////////////////////////////////////////
 
   const handleChange = e => {
@@ -82,7 +86,6 @@ const Login = props => {
     clearError();
     clearMessagesDispatch();
   };
-
   /////////////////////////////////////////////////////////////////
   return token ? (
     <Redirect to="/" />
@@ -150,7 +153,8 @@ const Login = props => {
         </form>
       </Paper>
       {messageCode === 463 && <EmailConfirmation />}
-      <div>{messageCode === 500 && <FatalError />}</div>
+      <div>{<FatalError state={isOpen} />}</div>
+      {messageCode === 500 && history.push("/error")}}
     </>
   );
 };

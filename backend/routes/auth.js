@@ -6,7 +6,7 @@ const verify = require("./verifyToken");
 
 //register normal
 router.post("/register", async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, lastName } = req.body;
 
   //check si el mail ya existe
   const emailExist = await User.findOne({ email });
@@ -15,9 +15,9 @@ router.post("/register", async (req, res) => {
       .status(400)
       .send({ code: 460, error: "email is already in use" });
   // check if username exist
-  const userName = await User.findOne({ name });
-  if (userName)
-    return res.status(400).send({ code: 461, error: "name is already in use" });
+  //const userName = await User.findOne({ name });
+  //if (userName)
+  //return res.status(400).send({ code: 461, error: "name is already in use" });
   // hash password
   const salt = await bcrypt.genSalt(10);
   const hashPassword = await bcrypt.hash(password, salt);
@@ -25,6 +25,7 @@ router.post("/register", async (req, res) => {
   //crear nuevo usuario
   const user = new User({
     name,
+    lastName,
     email,
     password: hashPassword
   });

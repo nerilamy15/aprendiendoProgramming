@@ -1,8 +1,10 @@
 import React from "react";
+import { Redirect } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { Typography, Paper, Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-const ErrorPage = () => {
+const ServerDown = () => {
   /////////////////////////////////////////////////////////////
   const useStyles = makeStyles(() => ({
     errorContainer: {
@@ -19,22 +21,39 @@ const ErrorPage = () => {
     gif: {
       pointerEvents: "none"
     },
-    message: {
-      marginTop: 50
+    messageContainer: {
+      display: "flex",
+      justifyContent: "center",
+      flexDirection: "column",
+      marginBottom: 20
+    },
+    message2: {
+      paddingTop: 10
     }
   }));
   const classes = useStyles();
-  const { errorContainer, gif, message } = classes;
+  const { errorContainer, gif, messageContainer, message2 } = classes;
   //////////////////////////////////////////////////////////////////
-  return (
+  const messagesReducer = useSelector(state => state.messagesReducer);
+  const { messageCode } = messagesReducer;
+  console.log(messageCode);
+  //////////////////////////////////////////////////////////////////
+  return messageCode !== 500 ? (
+    <Redirect to="/" />
+  ) : (
     <>
       <Grid container spacing={2}>
         <Grid item xs={3}></Grid>
         <Grid item xs={6}>
           <div className={errorContainer}>
-            <Typography className={message} variant="h3" color="secondary">
-              Page does not exist
-            </Typography>
+            <div className={messageContainer}>
+              <Typography variant="h4" color="secondary">
+                Ups, something went wrong
+              </Typography>
+              <Typography className={message2} variant="h6" color="primary">
+                please try again in few minutes
+              </Typography>
+            </div>
             <iframe
               className={gif}
               src="https://giphy.com/embed/yhfTY8JL1wIAE"
@@ -52,4 +71,4 @@ const ErrorPage = () => {
   );
 };
 
-export default ErrorPage;
+export default ServerDown;

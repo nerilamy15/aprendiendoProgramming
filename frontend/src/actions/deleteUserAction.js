@@ -11,15 +11,8 @@ export const deleteUserAction = ({ token, id }) => dispatch => {
     })
     .then(res => {
       dispatch({
-        type: DELETE_USER,
-        payload: {
-          users: res.data.deletedUser
-        }
+        type: DELETE_USER
       });
-      let message = res.data.message;
-      let messageCode = res.data.code;
-      dispatch(returnMessages(messageCode, message));
-      console.log(res, message, messageCode, res.data.deletedUser);
     })
 
     .catch(err => {
@@ -31,3 +24,23 @@ export const deleteUserAction = ({ token, id }) => dispatch => {
       });
     });
 };
+
+///////////////////////////////////////////////////////////////////////////
+/*export const deleteUserAction = ({ token, id }) => async dispatch => {
+  dispatch({ type: DATA_LOADING });
+  try {
+    let data = await axios.delete(`http://localhost:5001/admin/user/${id}`, {
+      headers: { "auth-token": token }
+    });
+    dispatch({
+      type: DELETE_USER
+    });
+  } catch (err) {
+    let errorCode = err.response ? err.response.data.code : 500;
+    let error = err.response && err.response.data.error;
+    dispatch(returnMessages(errorCode, error));
+    dispatch({
+      type: FAILDELETE_USER
+    });
+  }
+};*/

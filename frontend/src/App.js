@@ -10,6 +10,7 @@ import EditProfile from "./components/EditProfile";
 import UsersInformation from "./components/UsersInformation";
 import EmailConmirmation from "./components/EmailConfirmation";
 import SpecificUserInfoPage from "./components/SpecificUserInfoPage";
+import ServerDown from "./components/ServerDown";
 import ErrorPage from "./components/ErrorPage";
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
           <Route path="/admin" exact component={Admin} />
           <Route path="/admin/users" exact component={UsersInformation} />
           <Route path="/users/:slag" exact component={SpecificUserInfoPage} />
+          <Route path="/error" exact component={ServerDown} />
           <Route component={ErrorPage} />
         </Switch>
       </div>

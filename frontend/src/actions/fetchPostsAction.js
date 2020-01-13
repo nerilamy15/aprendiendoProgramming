@@ -24,3 +24,25 @@ export const fetchPosts = () => dispatch => {
       });
     });
 };
+
+/*export const fetchPosts = () => async dispatch => {
+  dispatch({ type: POSTS_LOADING });
+  try {
+    let response = await axios.get(`http://localhost:5001/posts`);
+    let data = response.data.posts;
+    dispatch({
+      type: FETCH_POSTS_SUCCESS,
+      payload: {
+        posts: data
+      }
+    });
+    console.log(response);
+  } catch (err) {
+    let errorCode = err.response ? err.response.data.code : 500;
+    let error = err.response && err.response.data.error;
+    dispatch(returnMessages(errorCode, error));
+    dispatch({
+      type: FETCH_POSTS_FAIL
+    });
+  }
+};*/

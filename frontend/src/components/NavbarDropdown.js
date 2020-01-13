@@ -3,7 +3,7 @@ import { Button, Menu, MenuItem, Fade } from "@material-ui/core";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import { Link } from "react-router-dom";
 
-const NavbarDropdown = ({ role, name, logout, btnStyle, popUpMarginTop }) => {
+const NavbarDropdown = ({ role, alias, logout, btnStyle, popUpMarginTop }) => {
   //////////////////////////////////////////////////////////////////////
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -36,7 +36,7 @@ const NavbarDropdown = ({ role, name, logout, btnStyle, popUpMarginTop }) => {
           aria-haspopup="true"
           onClick={handleClick}
         >
-          {`Welcome ${name}`}
+          {`Welcome ${alias}`}
           <ArrowDropDownIcon />
         </Button>
         <Menu

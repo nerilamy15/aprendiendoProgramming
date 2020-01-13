@@ -7,11 +7,11 @@ const verify = require("./verifyToken");
 router.patch("/user/:userId", verify, async (req, res) => {
   try {
     const { userId } = req.params;
-    const name = req.body.editedName;
+    const userName = req.body.editedUserName;
     const email = req.body.editedEmail;
     const updatedProfile = await User.updateOne(
       { _id: userId },
-      { $set: { name, email } }
+      { $set: { userName, email } }
     );
     const user = await User.findById(userId);
     res.status(200).send({ code: 270, user });

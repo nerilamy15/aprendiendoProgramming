@@ -10,7 +10,7 @@ import {
   Paper
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { Redirect } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { registerAction } from "../actions/registerAction";
 import { clearMessages } from "../actions/messagesActions";
@@ -21,13 +21,14 @@ const Register = props => {
     formContainer: {
       margin: "15vh auto",
       width: "300px",
-      height: " 350px",
+      height: "auto",
       display: "flex",
       flexDirection: "column",
       justifyContent: "center",
       alignItems: "center",
       textAlign: "center",
-      animation: "drop 1s ease"
+      animation: "drop 1s ease",
+      position: "relative"
     },
     buttons: {
       border: "solid 2px #8b70d2",
@@ -38,18 +39,22 @@ const Register = props => {
         border: "solid 2px white",
         color: "white"
       }
+    },
+    title: {
+      paddingTop: 20
     }
   }));
   const classes = useStyles();
-  const { formContainer, buttons } = classes;
+  const { formContainer, buttons, title } = classes;
   ///////////////////////////////////////////////////////////////
   const FormDefaultValues = {
     name: "",
+    lastName: "",
     email: "",
     password: ""
   };
   const [formValues, setFormValues] = useState(FormDefaultValues);
-  let { name, email, password } = formValues;
+  let { name, lastName, email, password } = formValues;
   //////////////////////////////////////////////////////////
   const handleChange = e => {
     const target = e.target;
@@ -68,12 +73,14 @@ const Register = props => {
   const clearMessagesDispatch = () => dispatch(clearMessages());
   ///////////////////////////////////////////
   const { register, handleSubmit, errors, clearError } = useForm();
-  /////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////
+  const history = useHistory();
+  ///////////////////////////////////////////////////////////////////////
 
   const registerSubmit = () => {
-    !verifyCaptcha === true
+    !verifyCaptcha
       ? alert("you forgot the captcha")
-      : dispatch(registerAction({ name, email, password, props }));
+      : dispatch(registerAction({ name, lastName, email, password, props }));
   };
 
   const clearAllErrors = () => {
@@ -88,7 +95,9 @@ const Register = props => {
     <>
       <Paper className={formContainer}>
         <form onSubmit={handleSubmit(registerSubmit)}>
-          <Typography variant="h6">Register</Typography>
+          <Typography className={title} variant="h6">
+            Register
+          </Typography>
           <div>
             <TextField
               inputRef={register({
@@ -98,7 +107,7 @@ const Register = props => {
                   message: "name must be at least 6 characteres long"
                 }
               })}
-              label="Username"
+              label="Name"
               onChange={handleChange}
               type="text"
               name="name"
@@ -108,6 +117,28 @@ const Register = props => {
               error={messageCode === 461 || errors.name}
               helperText={
                 (messageCode === 461 && message) || errors?.name?.message
+              }
+            ></TextField>
+          </div>
+          <div>
+            <TextField
+              inputRef={register({
+                required: { value: true, message: "lastname cannot be empty" },
+                minLength: {
+                  value: 6,
+                  message: "name must be at least 6 characteres long"
+                }
+              })}
+              label="Lastname"
+              onChange={handleChange}
+              type="text"
+              name="lastName"
+              value={lastName}
+              margin="normal"
+              onFocus={() => clearAllErrors()}
+              error={messageCode === 461 || errors.lastName}
+              helperText={
+                (messageCode === 461 && message) || errors?.lastName?.message
               }
             ></TextField>
           </div>
@@ -172,6 +203,7 @@ const Register = props => {
         <Captcha />
       </Paper>
       <div>{messageCode === 500 && <FatalError />}</div>
+      {messageCode === 500 && history.push("/error")}}
     </>
   );
 };

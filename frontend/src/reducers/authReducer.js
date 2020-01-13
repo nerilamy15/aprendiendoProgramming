@@ -21,6 +21,7 @@ const initialState = {
   token: null,
   role: null,
   name: null,
+  userName: null,
   id: null,
   email: null
 };

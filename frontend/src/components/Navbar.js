@@ -39,11 +39,11 @@ const Navbar = () => {
   const { navBar, links, buttons, buttonMargin, popUpMarginTop } = classes;
   //////////////////////////////////////////////////////////////////////
   const userInfo = useSelector(state => state.authReducer);
-  const { role, isAuthenticated, name } = userInfo;
+  const { role, isAuthenticated, name, userName } = userInfo;
   const dispatch = useDispatch();
   const logoutDispatch = () => dispatch(logoutAction());
   //////////////////////////////////////////////////////////////////////
-
+  let alias = userName ? userName : name;
   const auth = (
     <div>
       <Button className={`${buttons} ${buttonMargin}`}>
@@ -75,7 +75,7 @@ const Navbar = () => {
             {isAuthenticated && (
               <NavbarDropdown
                 role={role}
-                name={name}
+                alias={alias}
                 logout={logoutDispatch}
                 btnStyle={buttons}
                 popUpMarginTop={popUpMarginTop}

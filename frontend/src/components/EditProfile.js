@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import FatalError from "./FatalError";
 import SuccessMessage from "./SuccessMessage";
 import { useForm } from "react-hook-form";
-import { TextField, Button, Typography } from "@material-ui/core";
+import { TextField, Button, Typography, withTheme } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Redirect } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { editProfile } from "../actions/editProfileAction";
 import { clearMessages } from "../actions/messagesActions";
-///////____________________________________________________________/////////////////
-///////_____________ esto todavia no funciona bien________________/////////////////
-///////____________________________________________________________________________
 const EditProfile = props => {
   /////////////////////////////////////////////////////////////
   const useStyles = makeStyles(() => ({
@@ -24,7 +22,8 @@ const EditProfile = props => {
       alignItems: "center",
       textAlign: "center",
       animation: "drop 1s ease",
-      boxShadow: "0 0.5px 0 0 #ffffff inset, 0 1px 2px 0 #b3b3b3"
+      boxShadow: "0 0.5px 0 0 #ffffff inset, 0 1px 2px 0 #b3b3b3",
+      backgroundColor: "white"
     },
     buttons: {
       border: "solid 2px #8b70d2",
@@ -36,19 +35,23 @@ const EditProfile = props => {
         border: "solid 2px white",
         color: "white"
       }
+    },
+    textArea: {
+      backgroundColor: "white"
     }
   }));
   const classes = useStyles();
-  const { formContainer, buttons } = classes;
+  const { formContainer, buttons, textArea } = classes;
   //////////////////////////////////////////////////////////////////////////////
   const formDefaultValues = {
-    editedName: "",
+    editedUserName: "",
     editedEmail: ""
   };
   const [formValues, setFormValues] = useState(formDefaultValues);
-  const { editedName, editedEmail } = formValues;
+  const { editedUserName, editedEmail } = formValues;
   //////////////////////////////////////////////////////////////////////////////////
-
+  const history = useHistory();
+  ////////////////////////////////////////////////////////////////////////////////////////
   const handleChange = e => {
     const target = e.target;
     setFormValues(prevState => ({
@@ -56,22 +59,28 @@ const EditProfile = props => {
       [target.name]: target.value
     }));
   };
+
   ////////////////////////////////////////////////////////////////
   useEffect(() => {
-    setFormValues({ editedName: name, editedEmail: email });
+    setFormValues({ editedUserName: userNameOrName, editedEmail: email });
   }, []);
   ////////////////////////////////////////////////////////////////////
   const userData = useSelector(state => state.authReducer);
   const backEndMessages = useSelector(state => state.messagesReducer);
-  const { token, name, email, id } = userData;
+  const { token, name, email, id, userName } = userData;
+
+  const userNameOrName = userName ? userName : name;
 
   const { messageCode } = backEndMessages;
   const dispatch = useDispatch();
   const editProfileDispatch = () => {
-    dispatch(editProfile({ token, editedName, editedEmail, id }));
-
-    setFormValues({ editedName: "", editedEmail: "" });
+    dispatch(editProfile({ token, editedUserName, editedEmail, id }));
+    setFormValues({ editedUserName: "", editedEmail: "" });
+    setTimeout(() => {
+      history.push("/");
+    }, 1500);
   };
+
   const clearMessagesDispatch = () => dispatch(clearMessages());
   /////////////////////////////////////////////////////////////////////////////////////////
   const { register, handleSubmit, errors } = useForm();
@@ -88,12 +97,12 @@ const EditProfile = props => {
               inputRef={register({
                 required: { value: true, message: "field cannot be empty" }
               })}
-              label="name"
+              label="UserName"
               onChange={handleChange}
               onFocus={clearMessagesDispatch}
               type="text"
-              name="editedName"
-              value={editedName}
+              name="editedUserName"
+              value={editedUserName}
               margin="normal"
               error={errors.result}
               helperText={errors?.userDefault?.message}
@@ -116,15 +125,7 @@ const EditProfile = props => {
             <Button className={buttons} type="submit">
               Edit
             </Button>
-            <Button
-              className={buttons}
-              onClick={() =>
-                setFormValues(
-                  { userDefault: "", emailDefault: "" },
-                  props.history.push("/")
-                )
-              }
-            >
+            <Button className={buttons} onClick={() => history.push("/")}>
               Cancel
             </Button>
           </div>

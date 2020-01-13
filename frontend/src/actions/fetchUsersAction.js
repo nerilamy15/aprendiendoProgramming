@@ -31,3 +31,27 @@ export const fetchUsers = ({ token }) => dispatch => {
       });
     });
 };
+
+/*export const fetchUsers = ({ token }) => async dispatch => {
+  dispatch({ type: DATA_LOADING });
+  try {
+    let response = await axios.get("http://localhost:5001/admin/users", {
+      headers: { "auth-token": token }
+    });
+    let data = response.data.users;
+    console.log(response);
+    dispatch({
+      type: GET_USERS,
+      payload: {
+        users: data
+      }
+    });
+  } catch (err) {
+    let errorCode = err.response ? err.response.data.code : 500;
+    let error = err.response && err.response.data.error;
+    dispatch(returnMessages(errorCode, error));
+    dispatch({
+      type: GET_USERSFAIL
+    });
+  }
+};*/

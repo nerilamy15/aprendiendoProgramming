@@ -1,8 +1,14 @@
-import { GET_MESSAGES, CLEAR_MESSAGES } from "../actions/types";
+import {
+  GET_MESSAGES,
+  CLEAR_MESSAGES,
+  SNACK_OPEN,
+  SNACK_CLOSE
+} from "../actions/types";
 
 const initialState = {
   messageCode: null,
-  message: null
+  message: null,
+  isOpen: false
 };
 
 const messagesReducer = (state = initialState, action) => {
@@ -17,6 +23,19 @@ const messagesReducer = (state = initialState, action) => {
         messageCode: null,
         message: null
       };
+    case SNACK_OPEN: {
+      return {
+        ...state,
+        isOpen: true
+      };
+    }
+    case SNACK_CLOSE: {
+      return {
+        ...state,
+        isOpen: false
+      };
+    }
+
     default:
       return state;
   }

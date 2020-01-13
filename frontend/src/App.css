@@ -6,19 +6,22 @@
 body {
   position: relative;
   background-color: rgb(240, 240, 240);
+  background-image: url("https://www.transparenttextures.com/patterns/cubes.png");
 }
 a {
   text-decoration: none;
+}
+
+.protectAdmin {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed !important;
 }
 
 .hidden {
   display: none;
 }
 
-.captcha {
-  position: absolute;
-  bottom: -80px;
-}
 .popper {
   background-color: red;
   color: white;

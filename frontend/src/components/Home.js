@@ -1,9 +1,22 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import Posts from "./Posts";
-import { Typography, Paper, CircularProgress } from "@material-ui/core";
+import PostTextArea from "./PostTextArea";
+import {
+  Typography,
+  Paper,
+  CircularProgress,
+  Grid,
+  Popover,
+  Button,
+  Fade
+} from "@material-ui/core";
+import SortRoundedIcon from "@material-ui/icons/SortRounded";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchPosts } from "../actions/fetchPostsAction";
+import { fetchOldestPosts } from "../actions/fetchOldestPostsAction";
+import { fetchPostMostLikes } from "../actions/fetchPostMostLikesAction";
 
 const Home = () => {
   /////////////////////////////////////////////////////////////
@@ -21,39 +34,145 @@ const Home = () => {
     },
     cardsContainer: {
       marginTop: 100
+    },
+    cardsAndSort: {
+      position: "relative"
+    },
+    sortMenu: {
+      position: "absolute",
+      top: -50,
+      right: -22
+    },
+    sortBtnsContainer: {
+      display: "flex",
+      flexDirection: "column",
+      backgroundColor: "transparent"
+    },
+    sortBtns: {
+      color: "grey",
+      color: "white",
+      background: "linear-gradient(to top, #209cff 0%, #68e0cf 100%)",
+      borderRadius: 0
+    },
+    spinner: {
+      textAlign: "center"
     }
   }));
   const classes = useStyles();
-  const { homeContainer, cardsContainer } = classes;
+  const {
+    homeContainer,
+    cardsContainer,
+    cardsAndSort,
+    sortMenu,
+    sortBtnsContainer,
+    sortBtns,
+    spinner
+  } = classes;
+  //////////////////////////////////////////////////////////////////
+  const [anchorEl, setAnchorEl] = useState(false);
+
+  const handleClick = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(!anchorEl);
+  };
+
+  const open = Boolean(anchorEl);
+
   //////////////////////////////////////////////////////////////////
   const userInfo = useSelector(state => state.authReducer);
-  const { user } = userInfo;
+  const backEndMessages = useSelector(state => state.messagesReducer);
+  const { user, token } = userInfo;
+  const { messageCode, message } = backEndMessages;
 
   const postsState = useSelector(state => state.postReducer);
   const dispatch = useDispatch();
   const fetchPostsDispatch = () => dispatch(fetchPosts());
-  const { posts } = postsState;
-  console.log(posts);
+  const { posts, postsLoading } = postsState;
+  /////////////////////////////////////////////////////////////////
+  const oldestSort = () => {
+    dispatch(fetchOldestPosts());
+    handleClose();
+  };
+
+  const newestSort = () => {
+    dispatch(fetchPosts());
+    handleClose();
+  };
+
+  const mostLikes = () => {
+    dispatch(fetchPostMostLikes());
+    handleClose();
+  };
+  /////////////////////////////////////////////////////////////////
   useEffect(() => {
     fetchPostsDispatch();
   }, []);
 
+  const history = useHistory();
+
   return (
     <>
-      {user && (
-        <Paper className={homeContainer}>
-          <Typography
-            className="textCenter"
-            variant="h5"
-            color="secondary"
-          >{`Welcome ${user}`}</Typography>
-        </Paper>
-      )}
-      {!posts ? (
-        <CircularProgress size={50} />
-      ) : (
-        <Posts posts={posts} container={cardsContainer} />
-      )}
+      <Grid container spacing={2}>
+        <Grid item xs={3}>
+          <Paper>asdasda</Paper>
+        </Grid>
+        <Grid item xs={6}>
+          <PostTextArea />
+          {user && (
+            <Paper className={homeContainer}>
+              <Typography
+                className="textCenter"
+                variant="h5"
+                color="secondary"
+              >{`Welcome ${user}`}</Typography>
+            </Paper>
+          )}
+          {!posts || postsLoading ? (
+            <div className={spinner}>
+              <CircularProgress size={100} />
+            </div>
+          ) : (
+            <div className={cardsAndSort}>
+              <Button onClick={handleClick} className={sortMenu}>
+                <SortRoundedIcon></SortRoundedIcon>
+              </Button>
+              <Popover
+                open={open}
+                onClose={handleClose}
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "left"
+                }}
+                transformOrigin={{
+                  vertical: "center",
+                  horizontal: "center"
+                }}
+              >
+                <div className={sortBtnsContainer}>
+                  <Button className={sortBtns} onClick={() => mostLikes()}>
+                    Most Favorite
+                  </Button>
+                  <Button className={sortBtns} onClick={() => newestSort()}>
+                    Newest
+                  </Button>
+                  <Button className={sortBtns} onClick={() => oldestSort()}>
+                    Oldest
+                  </Button>
+                </div>
+              </Popover>
+              <Posts posts={posts} container={cardsContainer} token={token} />
+            </div>
+          )}
+        </Grid>
+        <Grid item xs={3}>
+          <Paper>asdasda</Paper>
+        </Grid>
+      </Grid>
+      {messageCode === 500 && history.push("/error")}}
     </>
   );
 };

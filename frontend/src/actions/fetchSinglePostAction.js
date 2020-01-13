@@ -1,20 +1,20 @@
 import axios from "axios";
 import { returnMessages } from "./messagesActions";
 
-import { GET_USER, GET_USERFAIL, DATA_LOADING } from "./types";
+import { FETCH_POST_SUCCESS, FETCH_POST_FAIL, POSTS_LOADING } from "./types";
 
-export const fetchUserAction = ({ token, id }) => dispatch => {
-  dispatch({ type: DATA_LOADING });
+/*export const fetchPost = ({ token, postId }) => dispatch => {
+  dispatch({ type: POSTS_LOADING });
   axios
-    .get(`http://localhost:5001/admin/user/${id}`, {
+    .get(`http://localhost:5001/posts/${postId}`, {
       headers: { "auth-token": token }
     })
     .then(res => {
       dispatch({
-        type: GET_USER,
-        payload: {
-          users: res.data.user
-        }
+        type: FETCH_POST_SUCCESS
+        //payload: {
+        //  users: res
+        //}
       });
       let message = res.data.message;
       let messageCode = res.data.code;
@@ -27,21 +27,20 @@ export const fetchUserAction = ({ token, id }) => dispatch => {
       let error = err.response && err.response.data.error;
       dispatch(returnMessages(errorCode, error));
       dispatch({
-        type: GET_USERFAIL
+        type: FETCH_POST_FAIL
       });
     });
-};
+};*/
 
-/*export const fetchUserAction = ({ token, id }) => async dispatch => {
+export const fetchPost = ({ token, postId }) => async dispatch => {
   try {
-    dispatch({ type: DATA_LOADING });
-    let response = await axios.get(`http://localhost:5001/admin/user/${id}`, {
+    dispatch({ type: POSTS_LOADING });
+    let response = await axios.get(`http://localhost:5001/posts/${postId}`, {
       headers: { "auth-token": token }
     });
-
-    let data = response.data.user;
+    let data = response.data.post;
     dispatch({
-      type: GET_USER,
+      type: FETCH_POST_SUCCESS,
       payload: {
         users: data
       }
@@ -55,7 +54,7 @@ export const fetchUserAction = ({ token, id }) => dispatch => {
     let error = err.response && err.response.data.error;
     dispatch(returnMessages(errorCode, error));
     dispatch({
-      type: GET_USERFAIL
+      type: FETCH_POST_FAIL
     });
   }
-};*/
+};
