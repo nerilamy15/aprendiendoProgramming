@@ -1,7 +1,10 @@
+@import url("https://fonts.googleapis.com/css?family=Righteous&display=swap");
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: "Righteous";
 }
 body {
   position: relative;
@@ -20,6 +23,10 @@ a {
 
 .hidden {
   display: none;
+}
+
+.editTable {
+  animation: aside 0.5s ease-in;
 }
 
 .popper {
@@ -102,5 +109,33 @@ a {
   100% {
     opacity: 1;
     transform: translateY(0px);
+  }
+}
+
+@keyframes aside {
+  0% {
+    opacity: 0;
+    transform: translateY(100px);
+  }
+
+  75% {
+    opacity: 0.3;
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+
+@keyframes expand {
+  0% {
+    opacity: 0.5;
+    transform: scale(0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
   }
 }

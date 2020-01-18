@@ -7,7 +7,7 @@ const verify = require("./verifyToken");
 router.get("/admin/users", verify, async (req, res) => {
   try {
     const users = await User.find();
-    res.status(200).send({ code: 200, users });
+    res.status(200).send({ code: 241, users });
   } catch (err) {
     res.status(400).send({ code: 500 });
   }
@@ -18,7 +18,7 @@ router.get("/admin/user/:userId", verify, async (req, res) => {
   const { userId } = req.params;
   try {
     const user = await User.findById(userId);
-    res.status(200).send({ code: 235, user });
+    res.status(200).send({ code: 242, user });
   } catch (err) {
     res.status(400).send({ code: 500 });
   }
@@ -29,7 +29,7 @@ router.delete("/admin/user/:userId", verify, async (req, res) => {
   try {
     const { userId } = req.params;
     const deletedUser = await User.deleteOne({ _id: userId });
-    res.status(200).send({ code: 236, message: "user deleted", deletedUser });
+    res.status(200).send({ code: 243, message: "user deleted", deletedUser });
   } catch (err) {
     res.status(400).send({ code: 500 });
   }
@@ -44,7 +44,7 @@ router.patch("/admin/user/:userId", verify, async (req, res) => {
       { _id: userId },
       { $set: { role, name, email } }
     );
-    res.status(200).send({ code: 200, updatedUser });
+    res.status(200).send({ code: 244, updatedUser });
   } catch (err) {
     res.status(400).send({ code: 500 });
   }

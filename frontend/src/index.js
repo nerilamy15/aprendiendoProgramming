@@ -11,7 +11,7 @@ import { createStore2, createPersistor } from "./store";
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: "#65cbb7",
+      main: /*"#65cbb7"*/ "#8b70d2",
       light: "#8bcbad",
       dark: "#89a5ad"
     },

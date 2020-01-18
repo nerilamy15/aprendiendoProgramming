@@ -36,7 +36,6 @@ const ServerDown = () => {
   //////////////////////////////////////////////////////////////////
   const messagesReducer = useSelector(state => state.messagesReducer);
   const { messageCode } = messagesReducer;
-  console.log(messageCode);
   //////////////////////////////////////////////////////////////////
   return messageCode !== 500 ? (
     <Redirect to="/" />
@@ -48,7 +47,7 @@ const ServerDown = () => {
           <div className={errorContainer}>
             <div className={messageContainer}>
               <Typography variant="h4" color="secondary">
-                Ups, something went wrong
+                Oops!, something went wrong
               </Typography>
               <Typography className={message2} variant="h6" color="primary">
                 please try again in few minutes

@@ -23,7 +23,8 @@ const initialState = {
   name: null,
   userName: null,
   id: null,
-  email: null
+  email: null,
+  avatar: null
 };
 
 const authReducer = (state = initialState, action) => {
@@ -37,16 +38,17 @@ const authReducer = (state = initialState, action) => {
     case LOGIN_SUCCESS:
       return {
         ...state,
+        ...action.payload,
         isLoading: false,
         isAuthenticated: true,
-        ...action.payload
+        verifyCaptcha: true
       };
     case REGISTER_SUCCESS:
       return {
         ...state,
         ...action.payload,
         isLoading: false,
-        verifyCaptcha: false
+        verifyCaptcha: true
       };
     case VERIFYCAPTCHA_SUCCESS:
       return {
@@ -55,7 +57,8 @@ const authReducer = (state = initialState, action) => {
       };
     case VERIFYCAPTCHA_FAIL:
       return {
-        ...state
+        ...state,
+        verifyCaptcha: false
       };
     case LOGIN_FAIL:
     case REGISTER_FAIL:
@@ -72,7 +75,8 @@ const authReducer = (state = initialState, action) => {
         isAuthenticated: false,
         isLoading: false,
         name: null,
-        verificarMail: false
+        verificarMail: false,
+        verifyCaptcha: false
       };
     case MAIL_CONFIRMED:
       return {

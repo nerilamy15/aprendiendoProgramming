@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { createPost } from "../actions/createPostAction";
-import { fetchPosts } from "../actions/fetchPostsAction";
-import { fetchOldestPosts } from "../actions/fetchOldestPostsAction";
+import { createPost } from "../actions/postsActions/createPostAction";
+import { fetchPosts } from "../actions/postsActions/fetchPostsAction";
 import { TextField, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import SnackbarMessages from "./SnackbarMessages";
 
 const PostTextArea = props => {
   const useStyles = makeStyles(() => ({
@@ -18,14 +18,14 @@ const PostTextArea = props => {
       position: "relative"
     },
     buttons: {
-      border: "solid 2px #8b70d2",
+      border: /*"solid 2px #8b70d2",*/ "solid 2px #8b70d2",
       position: "absolute",
       left: 165,
       bottom: -50,
-      color: "#8b70d2",
+      // color: "#8b70d2",
       backgroundColor: "white",
       "&:hover": {
-        backgroundColor: "#8b70d2 !important",
+        backgroundColor: /*#8b70d2 */ "#8b70d2 !important",
         border: "solid 2px white",
         color: "white"
       }
@@ -38,24 +38,21 @@ const PostTextArea = props => {
   const { TextAreaContainer, buttons, textArea } = classes;
   /////////////////////////////////////////////////////////
   const [post, setPost] = useState("");
-
   /////////////////////////////////////////////////////////
   const handleChange = e => {
     setPost(e.target.value);
   };
   /////////////////////////////////////////////////////////
-  const userInfo = useSelector(state => state.authReducer);
-  const { name, email, token, isAuthenticated } = userInfo;
+  const authReducer = useSelector(state => state.authReducer);
+  const messagesReducer = useSelector(state => state.messagesReducer);
+  const { messageCode } = messagesReducer;
+  const { name, email, token, isAuthenticated, avatar, id } = authReducer;
   /////////////////////////////////////////////////////////
   const dispatch = useDispatch();
   const history = useHistory();
-  const reloadPosts = () => dispatch(fetchPosts());
-  const createPostDispatch = () =>
-    dispatch(createPost({ name, email, post, token }));
 
-  const createNewPost = async () => {
-    await createPostDispatch();
-    reloadPosts();
+  const createNewPost = () => {
+    dispatch(createPost({ name, email, post, token, avatar, id }));
     setPost("");
   };
 
@@ -68,7 +65,7 @@ const PostTextArea = props => {
       <div className={TextAreaContainer}>
         <TextField
           className={textArea}
-          label="Lorem ipsum dolor..."
+          label="Your Post..."
           multiline
           rows="4"
           variant="outlined"
@@ -76,7 +73,7 @@ const PostTextArea = props => {
           value={post}
           onChange={handleChange}
         />
-        <Button className={buttons} onClick={() => submit()}>
+        <Button color="primary" className={buttons} onClick={() => submit()}>
           Post it
         </Button>
       </div>

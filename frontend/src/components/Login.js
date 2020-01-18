@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import FatalError from "./FatalError";
+import SnackbarMessages from "./SnackbarMessages";
 import EmailConfirmation from "./EmailConfirmation";
 import { useForm, ErrorMessage } from "react-hook-form";
 import {
@@ -13,7 +13,7 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import { Redirect } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { loginAction } from "../actions/loginAction";
+import { loginAction } from "../actions/authActions/loginAction";
 import { clearMessages } from "../actions/messagesActions";
 
 const Login = props => {
@@ -39,22 +39,28 @@ const Login = props => {
         border: "solid 2px white",
         color: "white"
       },
-      title1: {
-        fontFamily: "Helvetica"
+      title: {
+        color: "red",
+        fontFamily: "Righteous"
+      },
+      disable: {
+        cursor: "not-allowed !important",
+        opacity: 0.5,
+        backgroundColor: "red"
       }
     }
   }));
   const classes = useStyles();
-  const { formContainer, buttons } = classes;
+  const { formContainer, buttons, title, disable } = classes;
   /////////////////////////////////////////////////////////////
-  const userInfo = useSelector(state => state.authReducer);
-  const backEndMessages = useSelector(state => state.messagesReducer);
+  const authReducer = useSelector(state => state.authReducer);
+  const messagesReducer = useSelector(state => state.messagesReducer);
   //////////////////////////////////////////////////////////////////
   const dispatch = useDispatch();
   const logDispatch = () => dispatch(loginAction({ email, password, props }));
   const clearMessagesDispatch = () => dispatch(clearMessages());
-  const { token, isLoading } = userInfo;
-  const { messageCode, message, isOpen } = backEndMessages;
+  const { token, isLoading, verifyCaptcha } = authReducer;
+  const { messageCode, message } = messagesReducer;
   ////////////////////////////////////////////////////////////////////////
   const history = useHistory();
   ///////////////////////////////////////////////////////////////////
@@ -93,12 +99,9 @@ const Login = props => {
     <>
       <Paper className={formContainer}>
         <form onSubmit={handleSubmit(loginSubmit)}>
-          <Typography variant="h6">Log In</Typography>
-          <div
-            className="g-recaptcha"
-            data-sitekey="6LewnM0UAAAAABVb0aqhDQbSah_dcD9NpbyXBxVV"
-          ></div>
-
+          <Typography className={title} variant="h6">
+            Log In
+          </Typography>
           <div>
             <TextField
               color="secondary"
@@ -153,8 +156,8 @@ const Login = props => {
         </form>
       </Paper>
       {messageCode === 463 && <EmailConfirmation />}
-      <div>{<FatalError state={isOpen} />}</div>
-      {messageCode === 500 && history.push("/error")}}
+      <SnackbarMessages />
+      {/* {messageCode === 500 && history.push("/error")}}{<SnackbarMessages />}*/}
     </>
   );
 };

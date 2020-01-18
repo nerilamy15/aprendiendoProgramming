@@ -1,9 +1,34 @@
 import React, { useState } from "react";
 import { Button, Menu, MenuItem, Fade } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import { Link } from "react-router-dom";
 
-const NavbarDropdown = ({ role, alias, logout, btnStyle, popUpMarginTop }) => {
+const NavbarDropdown = ({ role, alias, logout }) => {
+  const useStyles = makeStyles(() => ({
+    btn: {
+      color: "white",
+      fontWeight: "bold",
+      textTransform: "uppercase",
+      transition: ".2s ease all",
+      paddingBottom: 5,
+      "&:hover": {
+        textDecoration: "none",
+        color: "#8b70d2",
+        backgroundColor: "transparent"
+      }
+    },
+    buttonMarginRight: {
+      marginRight: 15
+    },
+    popUpMarginTop: {
+      marginTop: 40
+    },
+    dropDownMenu: {}
+  }));
+
+  const classes = useStyles();
+  const { btn, popUpMarginTop, dropDownMenu } = classes;
   //////////////////////////////////////////////////////////////////////
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -31,7 +56,7 @@ const NavbarDropdown = ({ role, alias, logout, btnStyle, popUpMarginTop }) => {
     <>
       <div>
         <Button
-          className={btnStyle}
+          className={btn}
           aria-controls="simple-menu"
           aria-haspopup="true"
           onClick={handleClick}

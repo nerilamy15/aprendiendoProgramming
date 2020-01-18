@@ -3,13 +3,13 @@ import { AppBar, Button, Toolbar } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { logoutAction } from "../actions/logoutAction";
+import { logoutAction } from "../actions/authActions/logoutAction";
 import NavbarDropdown from "./NavbarDropdown";
 
 const Navbar = () => {
   const useStyles = makeStyles(() => ({
     navBar: {
-      background: "linear-gradient(to top, #209cff 0%, #68e0cf 100%)",
+      background: "#3b4248",
       boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
       color: "white",
       height: "10vh",
@@ -18,44 +18,49 @@ const Navbar = () => {
     },
     links: {
       color: "white",
+      fontWeight: "bold",
+      textTransform: "uppercase",
+      transition: ".2s ease all",
+      paddingBottom: 5,
       "&:hover": {
         textDecoration: "none",
-        color: "white"
+        color: "#8b70d2",
+        borderBottom: "solid 5px #8b70d2"
       }
     },
-    buttons: {
-      border: "2px solid white",
-      color: "white"
-    },
-    buttonMargin: {
-      marginRight: "10px"
+    buttonMarginRight: {
+      marginRight: 15
     },
     popUpMarginTop: {
-      marginTop: "40px"
+      marginTop: 40
     }
   }));
 
   const classes = useStyles();
-  const { navBar, links, buttons, buttonMargin, popUpMarginTop } = classes;
+  const {
+    navBar,
+    links,
+    buttons,
+    buttonMarginRight,
+    popUpMarginTop,
+    dropDown
+  } = classes;
   //////////////////////////////////////////////////////////////////////
-  const userInfo = useSelector(state => state.authReducer);
-  const { role, isAuthenticated, name, userName } = userInfo;
+  const authReducer = useSelector(state => state.authReducer);
+  const { role, isAuthenticated, name, userName } = authReducer;
   const dispatch = useDispatch();
   const logoutDispatch = () => dispatch(logoutAction());
   //////////////////////////////////////////////////////////////////////
   let alias = userName ? userName : name;
   const auth = (
     <div>
-      <Button className={`${buttons} ${buttonMargin}`}>
-        <Link className={links} to="/register">
-          Register
-        </Link>
-      </Button>
-      <Button className={buttons}>
-        <Link className={links} to="/login">
-          LogIn
-        </Link>
-      </Button>
+      <Link className={`${links} ${buttonMarginRight}`} to="/register">
+        Register
+      </Link>
+
+      <Link className={links} to="/login">
+        LogIn
+      </Link>
     </div>
   );
 
@@ -65,20 +70,18 @@ const Navbar = () => {
       <div>
         <AppBar position="fixed">
           <Toolbar className={navBar}>
-            <Button className={buttons}>
+            <div>
               <Link className={links} to="/">
                 Home
               </Link>
-            </Button>
-
+            </div>
             {!isAuthenticated && auth}
             {isAuthenticated && (
               <NavbarDropdown
+                styles={links}
                 role={role}
                 alias={alias}
                 logout={logoutDispatch}
-                btnStyle={buttons}
-                popUpMarginTop={popUpMarginTop}
               />
             )}
           </Toolbar>

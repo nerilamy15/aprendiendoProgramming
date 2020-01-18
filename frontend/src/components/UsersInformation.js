@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
-import FatalError from "./FatalError";
+import SnackbarMessages from "./SnackbarMessages";
 import SuccessMessage from "./SuccessMessage";
 import { makeStyles } from "@material-ui/core/styles";
 import UsersTable from "./UsersTable";
 import { Redirect } from "react-router-dom";
 import { Button, CircularProgress } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchUsers } from "../actions/fetchUsersAction";
+import { fetchUsers } from "../actions/userActions/fetchUsersAction";
 import { clearMessages } from "../actions/messagesActions";
 
 const UsersInformation = () => {
@@ -41,16 +41,16 @@ const UsersInformation = () => {
   const { formContainer, buttons } = classes;
 
   ////////////////////////////////////////////////////////////////////////
-  const userData = useSelector(state => state.authReducer);
-  const backEndMessages = useSelector(state => state.messagesReducer);
-  const userInfo = useSelector(state => state.fetchUsersReducer);
+  const authReducer = useSelector(state => state.authReducer);
+  const messagesReducer = useSelector(state => state.messagesReducer);
+  const fetchUsersReducer = useSelector(state => state.fetchUsersReducer);
   const dispatch = useDispatch();
   const clearMessagesDispatch = () => dispatch(clearMessages());
   const fetchUsersDispatch = () => dispatch(fetchUsers({ token }));
   /////////////////////////////////////////////////////////////////
-  const { messageCode } = backEndMessages;
-  const { token, role } = userData;
-  const { users, isLoading } = userInfo;
+  const { messageCode } = messagesReducer;
+  const { token, role } = authReducer;
+  const { users, isLoading } = fetchUsersReducer;
   /////////////////////////////////////////////////////////////////////
   useEffect(() => {
     fetchUsersDispatch();
@@ -67,7 +67,7 @@ const UsersInformation = () => {
       </div>
 
       <div className="marginBottom">
-        {messageCode === 500 && <FatalError />}
+        {messageCode === 500 && <SnackbarMessages />}
         {messageCode === 236 && <SuccessMessage />}
       </div>
       {isLoading || !users ? (

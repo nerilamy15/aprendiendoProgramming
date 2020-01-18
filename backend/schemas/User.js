@@ -36,6 +36,11 @@ const userSchema = new mongoose.Schema({
     default: "basic",
     enum: ["basic", "superadmin"]
   },
+  avatar: {
+    type: String,
+    default:
+      "https://res.cloudinary.com/dewhpk9yo/image/upload/v1579266670/user_rebiqg.png"
+  },
   isAuthenticated: {
     type: Boolean,
     default: "false"

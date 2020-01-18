@@ -31,7 +31,7 @@ router.post("/register", async (req, res) => {
   });
   try {
     const savedUser = await user.save();
-    res.status(201).send({ message: "account created", user });
+    res.status(201).send({ code: 230, message: "account created", user });
   } catch (err) {
     res.status(500).send({ code: 500 });
   }
@@ -70,7 +70,7 @@ router.post("/login", async (req, res) => {
         token,
         //user: user,
         message: "logged in",
-        code: 200,
+        code: 231,
         user
       });
   } catch (err) {
@@ -79,15 +79,14 @@ router.post("/login", async (req, res) => {
 });
 
 // authenticate email
-router.patch("/:email", async (req, res) => {
+router.put("/:email", async (req, res) => {
+  const { email } = req.params;
   try {
-    const { email } = req.params;
-    const { isAuthenticated } = req.body;
     const updatedUser = await User.updateOne(
       { email },
-      { $set: { isAuthenticated } }
+      { isAuthenticated: true }
     );
-    res.status(200).send({ code: 200, message: "authenticated!", updatedUser });
+    res.status(200).send({ code: 232, message: "authenticated!", updatedUser });
   } catch (err) {
     res.status(400).send(500);
   }

@@ -5,8 +5,8 @@ import NavigateBeforeIcon from "@material-ui/icons/NavigateBefore";
 import { useSelector } from "react-redux";
 
 const Pagination = ({ setCurrentUser, usersPerPage, currentUser }) => {
-  const userInfo = useSelector(state => state.fetchUsersReducer);
-  const { users } = userInfo;
+  const fetchUsersReducer = useSelector(state => state.fetchUsersReducer);
+  const { users } = fetchUsersReducer;
   const userNumbers = [];
   for (let i = 1; i <= Math.ceil(users.length / usersPerPage); i++) {
     userNumbers.push(i);

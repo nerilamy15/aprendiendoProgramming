@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import FatalError from "./FatalError";
-import SuccessMessage from "./SuccessMessage";
+import SnackbarMessages from "./SnackbarMessages";
 import { useForm } from "react-hook-form";
-import { TextField, Button, Typography, withTheme } from "@material-ui/core";
+import { TextField, Button, Typography, IconButton } from "@material-ui/core";
+import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 import { makeStyles } from "@material-ui/core/styles";
 import { Redirect } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { editProfile } from "../actions/editProfileAction";
+import { editProfile } from "../actions/userActions/editProfileAction";
+import { postImage } from "../actions/uploadImageAction";
 import { clearMessages } from "../actions/messagesActions";
 const EditProfile = props => {
   /////////////////////////////////////////////////////////////
   const useStyles = makeStyles(() => ({
     formContainer: {
       margin: "15vh auto",
-      width: "300px",
-      height: " 300px",
+      width: "400px",
+      height: "400px",
       display: "flex",
       flexDirection: "column",
       justifyContent: "center",
@@ -65,13 +66,13 @@ const EditProfile = props => {
     setFormValues({ editedUserName: userNameOrName, editedEmail: email });
   }, []);
   ////////////////////////////////////////////////////////////////////
-  const userData = useSelector(state => state.authReducer);
-  const backEndMessages = useSelector(state => state.messagesReducer);
-  const { token, name, email, id, userName } = userData;
+  const authReducer = useSelector(state => state.authReducer);
+  const messagesReducer = useSelector(state => state.messagesReducer);
+  const { token, name, email, id, userName, avatar } = authReducer;
 
   const userNameOrName = userName ? userName : name;
 
-  const { messageCode } = backEndMessages;
+  const { messageCode } = messagesReducer;
   const dispatch = useDispatch();
   const editProfileDispatch = () => {
     dispatch(editProfile({ token, editedUserName, editedEmail, id }));
@@ -81,22 +82,37 @@ const EditProfile = props => {
     }, 1500);
   };
 
+  //////////////////////////////////////////////////////////////////////
   const clearMessagesDispatch = () => dispatch(clearMessages());
   /////////////////////////////////////////////////////////////////////////////////////////
   const { register, handleSubmit, errors } = useForm();
+  /*const changeAvatar = e => {
+    const image = e.target.files[0];
+    const avatar = new FormData();
+    avatar.append("avatar", image);
+    dispatch(postImage({ id, avatar }));
+  };*/
+  /* const handleAvatarChange = () => {
+    const fileInput = document.getElementById("imageInput");
+    fileInput.click();
+  };*/
   ///////////////////////////////////////////////////////////////////////////////////
   return !token ? (
     <Redirect to="/" />
   ) : (
     <>
       <div className={formContainer}>
-        <form onSubmit={handleSubmit(editProfileDispatch)}>
+        <form
+          enctype="multipart/form-data"
+          onSubmit={handleSubmit(editProfileDispatch)}
+        >
           <Typography>Edit your profile </Typography>
           <div>
+            <div>
+              <img src={avatar} width={100} height={100}></img>
+            </div>
             <TextField
-              inputRef={register({
-                required: { value: true, message: "field cannot be empty" }
-              })}
+              inputRef={register({})}
               label="UserName"
               onChange={handleChange}
               onFocus={clearMessagesDispatch}
@@ -121,6 +137,20 @@ const EditProfile = props => {
               helperText={errors?.emailDefault?.message}
             ></TextField>
           </div>
+          <div>
+            {/*<input
+              name="avatar"
+              type="file"
+              id="imageInput"
+              hidden="hidden"
+              onChange={e => changeAvatar(e)}
+            ></input>
+            {
+              <IconButton onClick={handleAvatarChange}>
+                <EditOutlinedIcon />
+              </IconButton>
+            }*/}
+          </div>
           <div className="form-group">
             <Button className={buttons} type="submit">
               Edit
@@ -131,8 +161,9 @@ const EditProfile = props => {
           </div>
         </form>
       </div>
-      <div>{messageCode === 500 && <FatalError />}</div>
-      <div>{messageCode === 270 && <SuccessMessage />}</div>
+      <div>{<SnackbarMessages />}</div>
+      {/* <div>{messageCode === 270 && <SuccessMessage />}</div>*/}
+      {messageCode === 500 && history.push("/error")}
     </>
   );
 };

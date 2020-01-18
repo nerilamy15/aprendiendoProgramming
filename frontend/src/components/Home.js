@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import Posts from "./Posts";
 import PostTextArea from "./PostTextArea";
+import SnackbarMessages from "./SnackbarMessages";
 import {
   Typography,
   Paper,
@@ -9,14 +10,16 @@ import {
   Grid,
   Popover,
   Button,
-  Fade
+  Fade,
+  Menu,
+  MenuItem
 } from "@material-ui/core";
 import SortRoundedIcon from "@material-ui/icons/SortRounded";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchPosts } from "../actions/fetchPostsAction";
-import { fetchOldestPosts } from "../actions/fetchOldestPostsAction";
-import { fetchPostMostLikes } from "../actions/fetchPostMostLikesAction";
+import { fetchPosts } from "../actions/postsActions/fetchPostsAction";
+import { fetchOldestPosts } from "../actions/postsActions/fetchOldestPostsAction";
+import { fetchPostMostLikes } from "../actions/postsActions/fetchPostMostLikesAction";
 
 const Home = () => {
   /////////////////////////////////////////////////////////////
@@ -40,19 +43,26 @@ const Home = () => {
     },
     sortMenu: {
       position: "absolute",
-      top: -50,
-      right: -22
+      top: -60,
+      right: -20,
+      "&:hover": {
+        backgroundColor: "transparent"
+      }
     },
     sortBtnsContainer: {
-      display: "flex",
-      flexDirection: "column",
-      backgroundColor: "transparent"
+      marginLeft: 50
     },
     sortBtns: {
-      color: "grey",
       color: "white",
-      background: "linear-gradient(to top, #209cff 0%, #68e0cf 100%)",
-      borderRadius: 0
+      backgroundColor: "#3b4248",
+      borderRadius: 0,
+      "&:hover": {
+        backgroundColor: "3b4248",
+        color: "#8b70d2"
+      }
+    },
+    menu: {
+      backgroundColor: "#3b4248"
     },
     spinner: {
       textAlign: "center"
@@ -63,6 +73,7 @@ const Home = () => {
     homeContainer,
     cardsContainer,
     cardsAndSort,
+    menu,
     sortMenu,
     sortBtnsContainer,
     sortBtns,
@@ -79,18 +90,16 @@ const Home = () => {
     setAnchorEl(!anchorEl);
   };
 
-  const open = Boolean(anchorEl);
-
   //////////////////////////////////////////////////////////////////
-  const userInfo = useSelector(state => state.authReducer);
-  const backEndMessages = useSelector(state => state.messagesReducer);
-  const { user, token } = userInfo;
-  const { messageCode, message } = backEndMessages;
+  const authReducer = useSelector(state => state.authReducer);
+  const messagesReducer = useSelector(state => state.messagesReducer);
+  const { user, token } = authReducer;
+  const { messageCode, message } = messagesReducer;
 
-  const postsState = useSelector(state => state.postReducer);
+  const postReducer = useSelector(state => state.postReducer);
   const dispatch = useDispatch();
   const fetchPostsDispatch = () => dispatch(fetchPosts());
-  const { posts, postsLoading } = postsState;
+  const { posts, postsLoading } = postReducer;
   /////////////////////////////////////////////////////////////////
   const oldestSort = () => {
     dispatch(fetchOldestPosts());
@@ -137,33 +146,32 @@ const Home = () => {
           ) : (
             <div className={cardsAndSort}>
               <Button onClick={handleClick} className={sortMenu}>
-                <SortRoundedIcon></SortRoundedIcon>
+                <SortRoundedIcon fontSize="large" />
               </Button>
-              <Popover
-                open={open}
+              <Menu
+                className={sortBtnsContainer}
+                open={anchorEl}
                 onClose={handleClose}
                 anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "left"
-                }}
-                transformOrigin={{
-                  vertical: "center",
-                  horizontal: "center"
-                }}
               >
-                <div className={sortBtnsContainer}>
-                  <Button className={sortBtns} onClick={() => mostLikes()}>
-                    Most Favorite
-                  </Button>
-                  <Button className={sortBtns} onClick={() => newestSort()}>
-                    Newest
-                  </Button>
-                  <Button className={sortBtns} onClick={() => oldestSort()}>
-                    Oldest
-                  </Button>
+                <div>
+                  <MenuItem className={menu}>
+                    <Button className={sortBtns} onClick={() => mostLikes()}>
+                      Most Favorite
+                    </Button>
+                  </MenuItem>
+                  <MenuItem className={menu}>
+                    <Button className={sortBtns} onClick={() => newestSort()}>
+                      Newest
+                    </Button>
+                  </MenuItem>
+                  <MenuItem className={menu}>
+                    <Button className={sortBtns} onClick={() => oldestSort()}>
+                      Oldest
+                    </Button>
+                  </MenuItem>
                 </div>
-              </Popover>
+              </Menu>
               <Posts posts={posts} container={cardsContainer} token={token} />
             </div>
           )}
@@ -172,6 +180,7 @@ const Home = () => {
           <Paper>asdasda</Paper>
         </Grid>
       </Grid>
+      {<SnackbarMessages />}
       {messageCode === 500 && history.push("/error")}}
     </>
   );

@@ -1,24 +1,54 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
-import { useDispatch } from "react-redux";
-import { dislikePost } from "../actions/dislikePostAction";
-import { likePost } from "../actions/likePostAction";
-import { fetchPosts } from "../actions/fetchPostsAction";
+import { useDispatch, useSelector } from "react-redux";
+import { deletePost } from "../actions/postsActions/deletePost";
+import { editUser } from "../actions/userActions/editUserAction";
+import { dislikePost } from "../actions/postsActions/dislikePostAction";
+import { likePost } from "../actions/postsActions/likePostAction";
+import { fetchPosts } from "../actions/postsActions/fetchPostsAction";
 import relativeTime from "dayjs/plugin/relativeTime";
 import SentimentDissatisfiedOutlinedIcon from "@material-ui/icons/SentimentDissatisfiedOutlined";
 import SentimentSatisfiedOutlinedIcon from "@material-ui/icons/SentimentSatisfiedOutlined";
-import { Typography, Button, Card, CardContent } from "@material-ui/core";
+import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
+import DeleteOutlineOutlinedIcon from "@material-ui/icons/DeleteOutlineOutlined";
+import AddCommentOutlinedIcon from "@material-ui/icons/AddCommentOutlined";
+import CommentSection from "./CommentSection";
+import SnackbarMessages from "./SnackbarMessages";
+import {
+  Typography,
+  Button,
+  Card,
+  CardContent,
+  Tooltip,
+  Modal,
+  Backdrop,
+  Fade,
+  TextField
+} from "@material-ui/core";
+import CommentModal from "./CommentModal";
 import { makeStyles } from "@material-ui/core/styles";
 
-const Post = ({ postId, name, post, date, likes, dislikes, token }) => {
+const Post = ({
+  postId,
+  writer,
+  post,
+  date,
+  likes,
+  dislikes,
+  token,
+  avatar
+}) => {
   const useStyles = makeStyles(() => ({
     cardContainer: {
       marginBottom: 30,
-      animation: "drop 1s ease"
+      animation: "drop 1s ease",
+      transition: "0.5s ease all",
+      border: "2px dotted  #3b4248",
+      boxShadow: "none"
     },
     cardDetails: {
-      marginLeft: 130
+      marginLeft: 0
     },
     greenLike: {
       color: "green"
@@ -29,17 +59,32 @@ const Post = ({ postId, name, post, date, likes, dislikes, token }) => {
     noHover: {
       "&:hover": {
         backgroundColor: "transparent",
-        textDecoration: "none"
+        textDecoration: "none",
+        color: "#3b4248"
       }
     },
     createdAt: {
-      marginTop: 10
+      marginTop: 8
     },
     btns: {
-      paddingBottom: 10
+      paddingBottom: 10,
+      paddingTop: 10,
+      display: "flex",
+      justifyContent: "space-between"
     },
-    userName: {
-      marginBottom: 10
+    postUserName: {
+      fontFamily: "Righteous",
+      marginBottom: 0
+    },
+    hiddenTest: {
+      display: "none"
+    },
+    imgAndDetails: {
+      display: "flex"
+    },
+    imgBorder: {
+      borderRight: "2px dotted  #3b4248",
+      borderBottom: "2px dotted  #3b4248"
     }
   }));
   const classes = useStyles();
@@ -51,58 +96,122 @@ const Post = ({ postId, name, post, date, likes, dislikes, token }) => {
     cardContainer,
     createdAt,
     btns,
-    userName
+    postUserName,
+    hiddenTest,
+    imgAndDetails,
+    imgBorder
   } = classes;
   /////////////////////////////////////////////////////////
   dayjs.extend(relativeTime);
   /////////////////////////////////////////////////////////
-  const dispatch = useDispatch();
+  const authReducer = useSelector(state => state.authReducer);
+  const { role, userName, name } = authReducer;
+  /////////////////////////////////////////////////////////
+  const [open, setOpen] = useState(false);
 
-  // const dislikePostAction = () => dispatch(dislikePost({ postId, token }));
-  // const likePostAction = () => dispatch(likePost({ postId, token }));
-
-  const like = async () => {
-    await dispatch(likePost({ postId, token }));
-    dispatch(fetchPosts({ token }));
+  const handleModal = () => {
+    setOpen(!open);
   };
 
-  const dislike = async () => {
-    await dispatch(dislikePost({ postId, token }));
-    dispatch(fetchPosts({ token }));
+  /////////////////////////////////////////////////////////
+  const dispatch = useDispatch();
+
+  const like = () => {
+    //dispatch(likePost({ postId, token }));
+    console.log(`like the post with ID:${postId}`);
+    //dispatch(fetchPosts({ token }));
+  };
+
+  const dislike = () => {
+    //dispatch(dislikePost({ postId, token }));
+    // dispatch(fetchPosts({ token }));
+    console.log(`dislike the post with ID:${postId}`);
   };
 
   return (
     <>
-      <Card className={cardContainer}>
-        <CardContent className={cardDetails}>
-          <div className={userName}>
-            <Typography
-              className={noHover}
-              component={Link}
-              to={`/users/${name}`}
-              target="_blank"
-              variant="h6"
-              color="primary"
-            >
-              {name}
-            </Typography>
+      <div>
+        <CommentModal modalOpen={open} handleModal={handleModal} id={postId} />
+        <Card className={cardContainer}>
+          <div className={imgAndDetails}>
+            <img
+              className={imgBorder}
+              src={avatar}
+              alt="avatar"
+              width={100}
+              height={100}
+            />
+            <CardContent className={cardDetails}>
+              <div className={postUserName}>
+                <Typography
+                  className={noHover}
+                  component={Link}
+                  to={`/users/${writer}`}
+                  target="_blank"
+                  variant="h6"
+                  color="primary"
+                >
+                  {writer}
+                </Typography>
+                <Typography variant="body2">{post}</Typography>
+                <div className={createdAt}>
+                  <Typography variant="caption">
+                    {dayjs(date).fromNow()}
+                  </Typography>
+                </div>
+              </div>
+            </CardContent>
           </div>
-          <Typography variant="body2">{post}</Typography>
-          <div className={createdAt}>
-            <Typography variant="caption">{dayjs(date).fromNow()}</Typography>
+          <div className={btns}>
+            <div>
+              <Tooltip title="Like!">
+                <Button className={noHover} onClick={() => like()}>
+                  <SentimentSatisfiedOutlinedIcon className={greenLike} />
+                </Button>
+              </Tooltip>
+              <span className={greenLike}>{likes}</span>
+              <Tooltip title="Dislike!">
+                <Button className={noHover} onClick={() => dislike()}>
+                  <SentimentDissatisfiedOutlinedIcon className={redDislike} />
+                </Button>
+              </Tooltip>
+              <span className={redDislike}>{dislikes}</span>
+            </div>
+            <div></div>
+            <div>
+              <Tooltip title="Add a comment!">
+                <Button className={noHover} onClick={handleModal}>
+                  <AddCommentOutlinedIcon />
+                </Button>
+              </Tooltip>
+              <Tooltip title="Edit!">
+                <Button
+                  className={
+                    writer === userName || writer === name
+                      ? noHover
+                      : hiddenTest
+                  }
+                >
+                  <EditOutlinedIcon className={redDislike} />
+                </Button>
+              </Tooltip>
+              <Tooltip title="Delete!">
+                <Button
+                  className={
+                    writer === userName || writer === name
+                      ? noHover
+                      : hiddenTest
+                  }
+                  onClick={() => dispatch(deletePost({ token, postId }))}
+                >
+                  <DeleteOutlineOutlinedIcon className={redDislike} />
+                </Button>
+              </Tooltip>
+            </div>
           </div>
-        </CardContent>
-        <div className={btns}>
-          <Button className={noHover} onClick={() => like()}>
-            <SentimentSatisfiedOutlinedIcon className={greenLike} />
-          </Button>
-          <span className={greenLike}>{likes}</span>
-          <Button className={noHover} onClick={() => dislike()}>
-            <SentimentDissatisfiedOutlinedIcon className={redDislike} />
-          </Button>
-          <span className={redDislike}>{dislikes}</span>
-        </div>
-      </Card>
+          <CommentSection postId={postId} />
+        </Card>
+      </div>
     </>
   );
 };

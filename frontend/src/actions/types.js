@@ -1,3 +1,5 @@
+//global
+export const LOADING = "LOADING";
 // auth
 export const USER_LOADING = "USER_LOADING";
 export const USER_LOADED = "USER_LOADED";
@@ -46,6 +48,10 @@ export const CREATE_POST_SUCCESS = "CREATE_POST_SUCCESS";
 export const CREATE_POST_FAIL = "CREATE_POST_FAIL";
 export const FETCH_OLDEST_POSTS = "FETCH_OLDEST_POSTS";
 export const FETCH_POST_MOST_LIKES = "FETCH_POST_MOST_LIKES";
+export const UPLOAD_IMAGE_SUCESS = "UPLOAD_IMAGE_SUCESS";
+export const UPLOAD_IMAGE_FAIL = "UPLOAD_IMAGE_FAIL";
+export const DELETE_POST = "DELETE_POST";
+export const FAIL_DELETE_POST = "FAIL_DELETE_POST";
 ////////////////////////////////////////////////////
 //likes dislikes
 export const LIKE_SUCCESS = "LIKE_SUCCESS";
@@ -53,5 +59,13 @@ export const LIKE_FAIL = "LIKE_FAIL";
 export const DISLIKE_SUCCESS = "DISLIKE_SUCCESS";
 export const DISLIKE_SUCCESS_FAIL = "DISLIKE_SUCCESS_FAIL";
 ////////////////////////////////////////////////////////////
+// msj snack
 export const SNACK_OPEN = "SNACK_OPEN";
 export const SNACK_CLOSE = "SNACK_CLOSE";
+////////////////////////////////////////////////////////////
+// comments
+export const SUCCESS_COMMENT = "SUCCESS_COMMENT";
+export const FAIL_COMMENT = "FAIL_COMMENT";
+export const FETCH_COMMENTS = "FETCH_COMMENTS";
+export const FAIL_FETCH_COMMENTS = "FAIL_FETCH_COMMENTS";
+export const COMMENTS_LOADING = "COMMENTS_LOADING";

@@ -1,10 +1,10 @@
 import React from "react";
-import FatalError from "./FatalError";
+import SnackbarMessages from "./SnackbarMessages";
 //import { useForm } from "react-hook-form";
 import { TextField, Button, CircularProgress } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { clearMessages } from "../actions/messagesActions";
-import { editUser } from "../actions/editUserAction";
+import { editUser } from "../actions/userActions/editUserAction";
 
 const EditForm = ({
   name,
@@ -18,10 +18,10 @@ const EditForm = ({
 }) => {
   ///////////////////////////////////////////
 
-  const userInfo = useSelector(state => state.authReducer);
-  const backEndMessages = useSelector(state => state.messagesReducer);
-  const { token, isLoading } = userInfo;
-  const { messageCode } = backEndMessages;
+  const authReducer = useSelector(state => state.authReducer);
+  const messagesReducer = useSelector(state => state.messagesReducer);
+  const { token, isLoading } = authReducer;
+  const { messageCode } = messagesReducer;
   const dispatch = useDispatch();
   const clearMessagesDispatch = () => dispatch(clearMessages());
   const editUserDispatch = () =>
@@ -35,7 +35,7 @@ const EditForm = ({
   };
   return (
     <>
-      <div className={!formOpen ? "hidden" : " container marginLeft"}>
+      <div className={!formOpen ? "hidden" : "marginLeft editTable"}>
         <form onSubmit={submit}>
           <div>
             <TextField
@@ -86,7 +86,7 @@ const EditForm = ({
           </div>
         </form>
       </div>
-      <div>{messageCode === 500 && <FatalError />}</div>
+      <div>{messageCode === 500 && <SnackbarMessages />}</div>
     </>
   );
 };

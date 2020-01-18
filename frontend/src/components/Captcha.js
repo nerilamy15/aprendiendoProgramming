@@ -1,9 +1,9 @@
 import React from "react";
 import Recaptcha from "react-recaptcha";
 import { useDispatch } from "react-redux";
-import { verifyCaptchaAction } from "../actions/verifyCaptchaAction";
+import { verifyCaptchaAction } from "../actions/authActions/verifyCaptchaAction";
 
-const Captcha = ({ verifyCaptcha }) => {
+const Captcha = () => {
   const dispatch = useDispatch();
   const captchaDispatch = () => dispatch(verifyCaptchaAction());
 

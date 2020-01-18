@@ -11,7 +11,7 @@ const middleware = [thunk];
 const persistConfig = {
   key: "root",
   storage,
-  blacklist: ["errorsReducer", "userInfoReducer"]
+  blacklist: ["messagesReducer", "userInfoReducer"]
 };
 
 const persistedReducer = persistReducer(persistConfig, allReducers);

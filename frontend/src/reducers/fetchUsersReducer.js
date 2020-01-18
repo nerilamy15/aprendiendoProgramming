@@ -8,7 +8,9 @@ import {
   EDIT_USER,
   EDITUSER_FAIL,
   EDIT_PROFILE,
-  EDITPROFILE_FAIL
+  EDITPROFILE_FAIL,
+  UPLOAD_IMAGE_SUCESS,
+  UPLOAD_IMAGE_FAIL
 } from "../actions/types";
 
 const initialState = {
@@ -66,6 +68,14 @@ const fetchUsersReducer = (state = initialState, action) => {
         ...state
       };
     case EDITPROFILE_FAIL:
+      return {
+        ...state
+      };
+    case UPLOAD_IMAGE_SUCESS:
+      return {
+        ...state
+      };
+    case UPLOAD_IMAGE_FAIL:
       return {
         ...state
       };

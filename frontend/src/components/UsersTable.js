@@ -12,11 +12,12 @@ import {
   TableContainer,
   TableCell,
   TableBody,
-  Table
+  Table,
+  Tooltip
 } from "@material-ui/core/";
 import { useDispatch } from "react-redux";
-import { deleteUserAction } from "../actions/deleteUserAction";
-import { fetchUsers } from "../actions/fetchUsersAction";
+import { deleteUserAction } from "../actions/userActions/deleteUserAction";
+import { fetchUsers } from "../actions/userActions/fetchUsersAction";
 
 ////////////////////////////////////////////////////////////////////////
 const UsersTable = ({ users, token, messageCode, reloadTable }) => {
@@ -42,13 +43,10 @@ const UsersTable = ({ users, token, messageCode, reloadTable }) => {
   const { name, email, role, id } = formValues;
   ////////////////////////////////////////////////////////////////////////
   const dispatch = useDispatch();
-  // const deleteUserDispatch = id => dispatch(deleteUserAction({ token, id }));
 
   const removeUser = id => {
     dispatch(deleteUserAction({ token, id }));
     dispatch(fetchUsers({ token, id }));
-    //reloadTable();
-    //setAnchorEl(!anchorEl);
   };
   //////////////////////////////////////////////////////////////////////////////////////////////
   const editUser = (id, name, email, role) => {
@@ -102,23 +100,27 @@ const UsersTable = ({ users, token, messageCode, reloadTable }) => {
                 {currentUsers.map(user => (
                   <TableRow key={user._id}>
                     <TableCell>
-                      <Button
-                        className={user.role === "admin" && "protectAdmin"}
-                        onClick={() =>
-                          editUser(user._id, user.name, user.email, user.role)
-                        }
-                      >
-                        <EditOutlinedIcon></EditOutlinedIcon>
-                      </Button>
+                      <Tooltip title="Edit" placement="top">
+                        <Button
+                          className={user.role === "admin" && "protectAdmin"}
+                          onClick={() =>
+                            editUser(user._id, user.name, user.email, user.role)
+                          }
+                        >
+                          <EditOutlinedIcon></EditOutlinedIcon>
+                        </Button>
+                      </Tooltip>
                     </TableCell>
                     <TableCell>
-                      <Button
-                        className={user.role === "admin" && "protectAdmin"}
-                        type="button"
-                        onClick={() => removeUser(user._id)}
-                      >
-                        <DeleteOutlineOutlinedIcon></DeleteOutlineOutlinedIcon>
-                      </Button>
+                      <Tooltip title="delete" placement="top">
+                        <Button
+                          className={user.role === "admin" && "protectAdmin"}
+                          type="button"
+                          onClick={() => removeUser(user._id)}
+                        >
+                          <DeleteOutlineOutlinedIcon></DeleteOutlineOutlinedIcon>
+                        </Button>
+                      </Tooltip>
                     </TableCell>
                     <TableCell component="th" scope="row" align="center">
                       <Link to={`/admin/users/${user._id}`} target="_blank">

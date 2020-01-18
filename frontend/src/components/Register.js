@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import FatalError from "./FatalError";
+import SnackbarMessages from "./SnackbarMessages";
 import Captcha from "./Captcha";
 import { useForm } from "react-hook-form";
 import {
@@ -12,7 +12,8 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import { Redirect, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { registerAction } from "../actions/registerAction";
+import { registerAction } from "../actions/authActions/registerAction";
+import { snackOpen } from "../actions/messagesActions";
 import { clearMessages } from "../actions/messagesActions";
 
 const Register = props => {
@@ -41,6 +42,8 @@ const Register = props => {
       }
     },
     title: {
+      fontFamily: "Righteous",
+      textTransform: "capitalize",
       paddingTop: 20
     }
   }));
@@ -65,10 +68,10 @@ const Register = props => {
   };
   ////////////////////////////////////////////
 
-  const userInfo = useSelector(state => state.authReducer);
-  const backEndMessages = useSelector(state => state.messagesReducer);
-  const { token, isLoading, verifyCaptcha } = userInfo;
-  const { messageCode, message } = backEndMessages;
+  const authReducer = useSelector(state => state.authReducer);
+  const messagesReducer = useSelector(state => state.messagesReducer);
+  const { token, isLoading, verifyCaptcha } = authReducer;
+  const { messageCode, message } = messagesReducer;
   const dispatch = useDispatch();
   const clearMessagesDispatch = () => dispatch(clearMessages());
   ///////////////////////////////////////////
@@ -79,10 +82,10 @@ const Register = props => {
 
   const registerSubmit = () => {
     !verifyCaptcha
-      ? alert("you forgot the captcha")
+      ? dispatch(snackOpen())
       : dispatch(registerAction({ name, lastName, email, password, props }));
   };
-
+  //////////////////////////////////////////////////////////////////////////
   const clearAllErrors = () => {
     clearError();
     clearMessagesDispatch();
@@ -190,7 +193,7 @@ const Register = props => {
             ></TextField>
           </div>
           <div className="paddingTop">
-            <Button className={buttons} type="submit">
+            <Button color="primary" className={buttons} type="submit">
               Register
               {isLoading && (
                 <div className="spinnerMarginLeft">
@@ -202,8 +205,8 @@ const Register = props => {
         </form>
         <Captcha />
       </Paper>
-      <div>{messageCode === 500 && <FatalError />}</div>
-      {messageCode === 500 && history.push("/error")}}
+      {<SnackbarMessages />}
+      {messageCode === 500 && history.push("/error")}
     </>
   );
 };

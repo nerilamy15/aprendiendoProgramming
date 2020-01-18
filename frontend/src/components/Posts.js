@@ -9,8 +9,9 @@ const Posts = ({ posts, container, token }) => {
           <Post
             key={post._id}
             postId={post._id}
-            name={post.name}
+            writer={post.name}
             post={post.post}
+            avatar={post.avatar}
             date={post.date}
             likes={post.likes}
             dislikes={post.disLikes}
